@@ -12,5 +12,7 @@ public interface DocumentService {
 
     Document createDocument(String fileName, DocumentType type);
 
+    Document renameDocument(Long id, String fileName);
+
     void deleteDocument(Long id);
 }
