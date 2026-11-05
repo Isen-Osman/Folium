@@ -20,6 +20,9 @@ public class Document {
 
     private String fileName;
 
+    // Kade na diskot e zacuvan samiot fajl (za OCR/extraction podocna).
+    private String filePath;
+
     @Enumerated(EnumType.STRING)
     private DocumentType type;
 
@@ -42,6 +45,14 @@ public class Document {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     public DocumentType getType() {
