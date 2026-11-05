@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: backend
+  security:
+    user:
+      name: ${DEV_USER_USERNAME:dev}
+      password: ${DEV_USER_PASSWORD:dev-password}
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5434/folium}
     username: ${SPRING_DATASOURCE_USERNAME:folium_user}
