@@ -5,8 +5,8 @@ spring:
   application:
     name: backend
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:folium;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
-    username: ${SPRING_DATASOURCE_USERNAME:sa}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/folium}
+    username: ${SPRING_DATASOURCE_USERNAME:isendev}
     password: ${SPRING_DATASOURCE_PASSWORD:}
   jpa:
     hibernate:
