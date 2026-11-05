@@ -1,12 +1,13 @@
 package com.folium.backend.web.controllers;
 
-import com.folium.backend.dto.request.DocumentUploadRequest;
 import com.folium.backend.dto.request.RenameDocumentRequest;
 import com.folium.backend.dto.response.DocumentResponse;
 import com.folium.backend.dto.response.ExtractedDataResponse;
+import com.folium.backend.model.enums.DocumentType;
 import com.folium.backend.service.application.DocumentService;
 import com.folium.backend.service.application.ExtractedDataService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -44,11 +47,11 @@ public class DocumentController {
         return DocumentResponse.from(documentService.getDocument(id));
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public DocumentResponse createDocument(@RequestBody DocumentUploadRequest request) {
-        return DocumentResponse.from(
-                documentService.createDocument(request.fileName(), request.type()));
+    public DocumentResponse createDocument(@RequestParam("file") MultipartFile file,
+                                           @RequestParam("type") DocumentType type) {
+        return DocumentResponse.from(documentService.createDocument(file, type));
     }
 
     @PatchMapping("/{id}")
