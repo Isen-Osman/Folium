@@ -5,9 +5,9 @@ spring:
   application:
     name: backend
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/folium}
-    username: ${SPRING_DATASOURCE_USERNAME:isendev}
-    password: ${SPRING_DATASOURCE_PASSWORD:}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5434/folium}
+    username: ${SPRING_DATASOURCE_USERNAME:folium_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:FoliumDev2026!}
   jpa:
     hibernate:
       ddl-auto: update
