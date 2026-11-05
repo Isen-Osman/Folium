@@ -42,6 +42,14 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     @Transactional
+    public Document renameDocument(Long id, String fileName) {
+        Document document = getDocument(id);
+        document.setFileName(fileName);
+        return documentRepository.save(document);
+    }
+
+    @Override
+    @Transactional
     public void deleteDocument(Long id) {
         documentRepository.delete(getDocument(id));
     }
