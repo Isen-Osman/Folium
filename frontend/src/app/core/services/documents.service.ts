@@ -22,6 +22,10 @@ export class DocumentsService {
     return this.http.post<Document>('/api/documents', formData);
   }
 
+  deleteDocument(id: number): Observable<void> {
+    return this.http.delete<void>(`/api/documents/${id}`);
+  }
+
   processDocument(id: number): Observable<ProcessingJob> {
     return this.http.post<ProcessingJob>(`/api/processing/${id}`, null);
   }

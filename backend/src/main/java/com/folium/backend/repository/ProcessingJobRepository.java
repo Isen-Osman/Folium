@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface ProcessingJobRepository extends JpaRepository<ProcessingJob, Long> {
 
     List<ProcessingJob> findByDocumentId(Long documentId);
+
+    void deleteByDocumentId(Long documentId);
 }

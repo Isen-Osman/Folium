@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface ExtractedDataRepository extends JpaRepository<ExtractedData, Long> {
 
     Optional<ExtractedData> findByDocumentId(Long documentId);
+
+    void deleteByDocumentId(Long documentId);
 }
