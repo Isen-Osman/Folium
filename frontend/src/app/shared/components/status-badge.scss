@@ -1,0 +1,34 @@
+:host {
+  display: inline-block;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #eef1ec;
+  color: var(--color-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.badge.completed {
+  background: #dcebd8;
+  color: #2f6b47;
+}
+
+.badge.processing {
+  background: #dbe8f5;
+  color: #2f5f86;
+}
+
+.badge.pending {
+  background: #f6ecd2;
+  color: #8a6a1f;
+}
+
+.badge.failed {
+  background: #f6dedb;
+  color: var(--color-danger);
+}

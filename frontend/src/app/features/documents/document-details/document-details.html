@@ -15,7 +15,7 @@
 
   <dl class="details-card">
     <div><dt>Тип</dt><dd>{{ document.type }}</dd></div>
-    <div><dt>Статус</dt><dd>{{ document.status }}</dd></div>
+    <div><dt>Статус</dt><dd><app-status-badge [status]="document.status" /></dd></div>
     <div><dt>Додаден</dt><dd>{{ document.uploadedAt | date: 'medium' }}</dd></div>
     <div><dt>ID</dt><dd>{{ document.id }}</dd></div>
   </dl>

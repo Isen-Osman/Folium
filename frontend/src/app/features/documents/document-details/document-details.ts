@@ -4,10 +4,11 @@ import { DocumentsService } from '../../../core/services/documents.service';
 import { Document, ExtractedData } from '../../../core/models/document';
 import { apiErrorMessage } from '../../../core/api-error-message';
 import { StatusMessage } from '../../../shared/components/status-message';
+import { StatusBadge } from '../../../shared/components/status-badge';
 
 @Component({
   selector: 'app-document-details',
-  imports: [DatePipe, StatusMessage],
+  imports: [DatePipe, StatusMessage, StatusBadge],
   styleUrl: './document-details.scss',
   templateUrl: './document-details.html',
 })

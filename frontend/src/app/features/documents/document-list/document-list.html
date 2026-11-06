@@ -20,8 +20,9 @@
             <button class="document-row" type="button" (click)="openDocument(document.id)">
               <span class="document-name">
                 <strong>{{ document.fileName }}</strong>
-                <small>{{ document.type }} · {{ document.status }}</small>
+                <small>{{ document.type }}</small>
               </span>
+              <app-status-badge [status]="document.status" />
               <time>{{ document.uploadedAt | date: 'mediumDate' }}</time>
               <span class="row-arrow" aria-hidden="true">→</span>
             </button>

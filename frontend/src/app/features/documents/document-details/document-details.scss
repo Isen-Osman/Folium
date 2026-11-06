@@ -5,7 +5,7 @@ h1 {
 
 .intro {
   margin: 8px 0 28px;
-  color: #748077;
+  color: var(--color-muted);
 }
 
 h2 {
@@ -16,9 +16,9 @@ h2 {
 .details-card {
   margin: 0;
   padding: 0 20px;
-  border: 1px solid #e5e9e2;
-  border-radius: 10px;
-  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
 }
 
 .details-card div {
@@ -27,7 +27,7 @@ h2 {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  border-bottom: 1px solid #edf0eb;
+  border-bottom: 1px solid var(--color-border-soft);
 }
 
 .details-card div:last-child {
@@ -35,7 +35,7 @@ h2 {
 }
 
 .details-card dt {
-  color: #7c877f;
+  color: var(--color-muted);
 }
 
 .details-card dd {
@@ -60,26 +60,26 @@ h2 {
 .rename-form input {
   flex: 1 1 240px;
   padding: 9px 12px;
-  border: 1px solid #d6ddd2;
-  border-radius: 8px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
   font: inherit;
 }
 
 .rename-form button,
 .secondary-button {
   padding: 9px 16px;
-  border: 1px solid #d6ddd2;
-  border-radius: 8px;
-  background: #fff;
-  color: #316b4d;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-primary);
   cursor: pointer;
   font: inherit;
 }
 
 .rename-form button[type='submit'] {
-  border-color: #316b4d;
-  background: #316b4d;
-  color: #fff;
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-surface);
 }
 
 .rename-form button:disabled,
@@ -90,10 +90,10 @@ h2 {
 
 .primary-button {
   padding: 9px 16px;
-  border: 1px solid #316b4d;
-  border-radius: 8px;
-  background: #316b4d;
-  color: #fff;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: var(--color-surface);
   cursor: pointer;
   font: inherit;
 }
@@ -106,10 +106,10 @@ h2 {
 
 .danger-button {
   padding: 9px 16px;
-  border: 1px solid #a33d35;
-  border-radius: 8px;
-  background: #fff;
-  color: #a33d35;
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-danger);
   cursor: pointer;
   font: inherit;
 }
@@ -117,9 +117,9 @@ h2 {
 .raw-text {
   margin: 0;
   padding: 16px 20px;
-  border: 1px solid #e5e9e2;
-  border-radius: 10px;
-  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 13px;
   line-height: 1.5;
@@ -132,7 +132,7 @@ h2 {
   padding: 0;
   border: 0;
   background: transparent;
-  color: #47754f;
+  color: var(--color-primary-dark);
   cursor: pointer;
   font: inherit;
 }

@@ -1,5 +1,14 @@
 <form class="upload-card" (submit)="upload($event)">
-  <input type="file" (change)="onFile($event)" accept=".pdf,.docx,image/*" />
+  <label class="dropzone" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+    <input type="file" (change)="onFile($event)" accept=".pdf,.docx,image/*" hidden />
+    @if (selectedFile(); as file) {
+      <span class="dropzone-title">{{ file.name }}</span>
+      <span class="dropzone-hint">Кликни или претегни друг фајл</span>
+    } @else {
+      <span class="dropzone-title">Претегни фајл тука</span>
+      <span class="dropzone-hint">или кликни за избор (PDF, DOCX, слика)</span>
+    }
+  </label>
   <select [value]="selectedType()" (change)="onType($event)">
     <option value="PDF">PDF</option>
     <option value="IMAGE">IMAGE</option>
