@@ -1,0 +1,147 @@
+.content {
+  width: min(900px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 52px 0;
+}
+
+h1 {
+  margin: 0;
+  font-size: 30px;
+}
+
+.intro {
+  margin: 8px 0 28px;
+  color: #748077;
+}
+
+.upload-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  border: 1px solid #e5e9e2;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.upload-card input[type='file'] {
+  flex: 1 1 240px;
+  font: inherit;
+}
+
+.upload-card select,
+.upload-card button {
+  padding: 8px 12px;
+  border: 1px solid #d6ddd2;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.upload-card button {
+  border-color: #316b4d;
+  background: #316b4d;
+  color: #fff;
+  cursor: pointer;
+}
+
+.upload-card button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.document-list,
+.details-card {
+  margin: 0;
+  padding: 0 20px;
+  border: 1px solid #e5e9e2;
+  border-radius: 10px;
+  background: #fff;
+  list-style: none;
+}
+
+.document-row {
+  display: flex;
+  width: 100%;
+  min-height: 70px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid #edf0eb;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.document-list li:last-child .document-row {
+  border-bottom: 0;
+}
+
+.document-row strong,
+.document-name small {
+  display: block;
+}
+
+.document-name small,
+.document-row time,
+.row-arrow {
+  margin-top: 5px;
+  color: #7c877f;
+  font-size: 12px;
+}
+
+.document-row time {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.document-row:hover strong {
+  color: #316b4d;
+}
+
+.details-card div {
+  display: flex;
+  min-height: 60px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid #edf0eb;
+}
+
+.details-card div:last-child {
+  border-bottom: 0;
+}
+
+.details-card dt {
+  color: #7c877f;
+}
+
+.details-card dd {
+  margin: 0;
+  text-align: right;
+}
+
+.back-button {
+  margin-bottom: 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #47754f;
+  cursor: pointer;
+  font: inherit;
+}
+
+@media (max-width: 520px) {
+  .document-row {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    padding: 12px 0;
+  }
+}

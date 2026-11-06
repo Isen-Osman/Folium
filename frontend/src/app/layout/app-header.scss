@@ -1,0 +1,22 @@
+:host {
+  display: block;
+}
+
+.topbar {
+  display: flex;
+  width: min(900px, calc(100% - 40px));
+  height: 72px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto;
+  border-bottom: 1px solid #e5e9e2;
+  color: #69766d;
+  font-size: 14px;
+}
+
+.brand {
+  color: #316b4d;
+  font-size: 22px;
+  font-weight: 750;
+  text-decoration: none;
+}
