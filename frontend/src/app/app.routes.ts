@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { DocumentsPage } from './features/documents/documents-page';
+import { DocumentList } from './features/documents/document-list/document-list';
 
 export const routes: Routes = [
-  { path: '', component: DocumentsPage },
+  { path: '', component: DocumentList },
 ];

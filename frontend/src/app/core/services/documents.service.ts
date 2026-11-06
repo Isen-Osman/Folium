@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Document, DocumentType } from './document';
+import { Document, DocumentType, ExtractedData, ProcessingJob } from '../models/document';
 
 @Injectable({ providedIn: 'root' })
 export class DocumentsService {
@@ -20,5 +20,13 @@ export class DocumentsService {
     formData.append('file', file);
     formData.append('type', type);
     return this.http.post<Document>('/api/documents', formData);
+  }
+
+  processDocument(id: number): Observable<ProcessingJob> {
+    return this.http.post<ProcessingJob>(`/api/processing/${id}`, null);
+  }
+
+  getExtractedData(id: number): Observable<ExtractedData> {
+    return this.http.get<ExtractedData>(`/api/documents/${id}/extracted-data`);
   }
 }
