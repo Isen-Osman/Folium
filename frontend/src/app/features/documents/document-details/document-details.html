@@ -1,0 +1,45 @@
+@if (document(); as document) {
+  <button class="back-button" type="button" (click)="goBack()">← Назад кон документите</button>
+  <h1>{{ document.fileName }}</h1>
+  <p class="intro">Детали за документот.</p>
+
+  <dl class="details-card">
+    <div><dt>Тип</dt><dd>{{ document.type }}</dd></div>
+    <div><dt>Статус</dt><dd>{{ document.status }}</dd></div>
+    <div><dt>Додаден</dt><dd>{{ document.uploadedAt | date: 'medium' }}</dd></div>
+    <div><dt>ID</dt><dd>{{ document.id }}</dd></div>
+  </dl>
+
+  @if (document.status !== 'COMPLETED') {
+    <button class="primary-button" type="button" (click)="processDocument()" [disabled]="processing()">
+      {{ processing() ? 'Се процесира...' : 'Процесирај документ' }}
+    </button>
+  }
+
+  @if (processingError()) {
+    <app-status-message [message]="processingError()" [isError]="true" />
+  }
+
+  @if (extractedLoading()) {
+    <app-status-message message="Се вчитуваат извлечените податоци..." />
+  } @else if (extractedError()) {
+    <app-status-message [message]="extractedError()" [isError]="true" />
+  } @else if (extractedData(); as data) {
+    <h2>Извлечен текст</h2>
+    <pre class="raw-text">{{ data.rawText }}</pre>
+
+    @if (data.fields.length > 0) {
+      <h2>Полиња</h2>
+      <dl class="details-card">
+        @for (field of data.fields; track field.id) {
+          <div><dt>{{ field.name }}</dt><dd>{{ field.value }}</dd></div>
+        }
+      </dl>
+    }
+  }
+} @else if (loading()) {
+  <app-status-message message="Се вчитува документот..." />
+} @else if (error()) {
+  <button class="back-button" type="button" (click)="goBack()">← Назад кон документите</button>
+  <app-status-message [message]="error()" [isError]="true" />
+}

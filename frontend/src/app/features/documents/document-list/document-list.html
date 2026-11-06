@@ -1,0 +1,33 @@
+<section class="content">
+  @if (selectedDocumentId(); as id) {
+    <app-document-details [documentId]="id" (back)="closeDocument()" />
+  } @else {
+    <h1>Документи</h1>
+    <p class="intro">Документите зачувани во Folium.</p>
+
+    <app-document-upload (uploaded)="loadDocuments()" />
+
+    @if (loading()) {
+      <app-status-message message="Се вчитуваат документите..." />
+    } @else if (error()) {
+      <app-status-message [message]="error()" [isError]="true" />
+    } @else if (documents().length === 0) {
+      <app-status-message message="Сè уште нема документи." />
+    } @else {
+      <ul class="document-list">
+        @for (document of documents(); track document.id) {
+          <li>
+            <button class="document-row" type="button" (click)="openDocument(document.id)">
+              <span class="document-name">
+                <strong>{{ document.fileName }}</strong>
+                <small>{{ document.type }} · {{ document.status }}</small>
+              </span>
+              <time>{{ document.uploadedAt | date: 'mediumDate' }}</time>
+              <span class="row-arrow" aria-hidden="true">→</span>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  }
+</section>

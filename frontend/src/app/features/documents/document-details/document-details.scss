@@ -1,0 +1,83 @@
+h1 {
+  margin: 0;
+  font-size: 30px;
+}
+
+.intro {
+  margin: 8px 0 28px;
+  color: #748077;
+}
+
+h2 {
+  margin: 28px 0 12px;
+  font-size: 20px;
+}
+
+.details-card {
+  margin: 0;
+  padding: 0 20px;
+  border: 1px solid #e5e9e2;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.details-card div {
+  display: flex;
+  min-height: 60px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid #edf0eb;
+}
+
+.details-card div:last-child {
+  border-bottom: 0;
+}
+
+.details-card dt {
+  color: #7c877f;
+}
+
+.details-card dd {
+  margin: 0;
+  text-align: right;
+}
+
+.primary-button {
+  margin-top: 20px;
+  padding: 9px 16px;
+  border: 1px solid #316b4d;
+  border-radius: 8px;
+  background: #316b4d;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+}
+
+.primary-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.raw-text {
+  margin: 0;
+  padding: 16px 20px;
+  border: 1px solid #e5e9e2;
+  border-radius: 10px;
+  background: #fff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.back-button {
+  margin-bottom: 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #47754f;
+  cursor: pointer;
+  font: inherit;
+}

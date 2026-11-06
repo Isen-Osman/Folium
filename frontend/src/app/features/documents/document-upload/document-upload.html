@@ -1,0 +1,17 @@
+<form class="upload-card" (submit)="upload($event)">
+  <input type="file" (change)="onFile($event)" accept=".pdf,.docx,image/*" />
+  <select [value]="selectedType()" (change)="onType($event)">
+    <option value="PDF">PDF</option>
+    <option value="IMAGE">IMAGE</option>
+    <option value="DOCX">DOCX</option>
+  </select>
+  <button type="submit" [disabled]="uploading() || !selectedFile()">
+    {{ uploading() ? 'Се прикачува...' : 'Прикачи' }}
+  </button>
+</form>
+
+@if (uploadError()) {
+  <app-status-message [message]="uploadError()" [isError]="true" />
+} @else if (uploadSuccess()) {
+  <app-status-message [message]="uploadSuccess()" />
+}

@@ -14,45 +14,7 @@ h1 {
   color: #748077;
 }
 
-.upload-card {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 24px;
-  padding: 16px 20px;
-  border: 1px solid #e5e9e2;
-  border-radius: 10px;
-  background: #fff;
-}
-
-.upload-card input[type='file'] {
-  flex: 1 1 240px;
-  font: inherit;
-}
-
-.upload-card select,
-.upload-card button {
-  padding: 8px 12px;
-  border: 1px solid #d6ddd2;
-  border-radius: 8px;
-  font: inherit;
-}
-
-.upload-card button {
-  border-color: #316b4d;
-  background: #316b4d;
-  color: #fff;
-  cursor: pointer;
-}
-
-.upload-card button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.document-list,
-.details-card {
+.document-list {
   margin: 0;
   padding: 0 20px;
   border: 1px solid #e5e9e2;
@@ -102,38 +64,6 @@ h1 {
 
 .document-row:hover strong {
   color: #316b4d;
-}
-
-.details-card div {
-  display: flex;
-  min-height: 60px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  border-bottom: 1px solid #edf0eb;
-}
-
-.details-card div:last-child {
-  border-bottom: 0;
-}
-
-.details-card dt {
-  color: #7c877f;
-}
-
-.details-card dd {
-  margin: 0;
-  text-align: right;
-}
-
-.back-button {
-  margin-bottom: 20px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #47754f;
-  cursor: pointer;
-  font: inherit;
 }
 
 @media (max-width: 520px) {
