@@ -3,6 +3,8 @@ package com.folium.backend.service.application.impl;
 import com.folium.backend.model.domain.Document;
 import com.folium.backend.model.enums.DocumentType;
 import com.folium.backend.repository.DocumentRepository;
+import com.folium.backend.repository.ExtractedDataRepository;
+import com.folium.backend.repository.ProcessingJobRepository;
 import com.folium.backend.service.application.DocumentService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,11 +24,17 @@ import java.util.UUID;
 public class DocumentServiceImpl implements DocumentService {
 
     private final DocumentRepository documentRepository;
+    private final ExtractedDataRepository extractedDataRepository;
+    private final ProcessingJobRepository processingJobRepository;
     private final Path uploadDir;
 
     public DocumentServiceImpl(DocumentRepository documentRepository,
+                               ExtractedDataRepository extractedDataRepository,
+                               ProcessingJobRepository processingJobRepository,
                                @Value("${app.upload-dir:uploads}") String uploadDir) {
         this.documentRepository = documentRepository;
+        this.extractedDataRepository = extractedDataRepository;
+        this.processingJobRepository = processingJobRepository;
         this.uploadDir = Path.of(uploadDir);
     }
 
@@ -88,7 +96,12 @@ public class DocumentServiceImpl implements DocumentService {
     @Transactional
     public void deleteDocument(Long id) {
         Document document = getDocument(id);
+
+        processingJobRepository.deleteByDocumentId(id);
+        extractedDataRepository.deleteByDocumentId(id);
         documentRepository.delete(document);
+        documentRepository.flush();
+
         deleteStoredFile(document.getFilePath());
     }
 
