@@ -1,6 +1,16 @@
 @if (document(); as document) {
   <button class="back-button" type="button" (click)="goBack()">← Назад кон документите</button>
-  <h1>{{ document.fileName }}</h1>
+  @if (editingName()) {
+    <form class="rename-form" (submit)="saveName($event)">
+      <input type="text" [value]="name()" (input)="onName($event)" />
+      <button type="submit" [disabled]="renaming() || !name().trim()">
+        {{ renaming() ? 'Се зачувува...' : 'Зачувај' }}
+      </button>
+      <button type="button" (click)="cancelRename()" [disabled]="renaming()">Откажи</button>
+    </form>
+  } @else {
+    <h1>{{ document.fileName }}</h1>
+  }
   <p class="intro">Детали за документот.</p>
 
   <dl class="details-card">
@@ -11,6 +21,7 @@
   </dl>
 
   <div class="actions">
+    <button class="secondary-button" type="button" (click)="startRename()">Преименувај</button>
     @if (document.status !== 'COMPLETED') {
       <button class="primary-button" type="button" (click)="processDocument()" [disabled]="processing()">
         {{ processing() ? 'Се процесира...' : 'Процесирај документ' }}
@@ -27,6 +38,10 @@
 
   @if (deleteError()) {
     <app-status-message [message]="deleteError()" [isError]="true" />
+  }
+
+  @if (renameError()) {
+    <app-status-message [message]="renameError()" [isError]="true" />
   }
 
   @if (extractedLoading()) {

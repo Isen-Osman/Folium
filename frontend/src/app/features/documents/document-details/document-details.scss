@@ -50,6 +50,44 @@ h2 {
   margin-top: 20px;
 }
 
+.rename-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.rename-form input {
+  flex: 1 1 240px;
+  padding: 9px 12px;
+  border: 1px solid #d6ddd2;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.rename-form button,
+.secondary-button {
+  padding: 9px 16px;
+  border: 1px solid #d6ddd2;
+  border-radius: 8px;
+  background: #fff;
+  color: #316b4d;
+  cursor: pointer;
+  font: inherit;
+}
+
+.rename-form button[type='submit'] {
+  border-color: #316b4d;
+  background: #316b4d;
+  color: #fff;
+}
+
+.rename-form button:disabled,
+.secondary-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .primary-button {
   padding: 9px 16px;
   border: 1px solid #316b4d;

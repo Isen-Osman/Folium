@@ -27,6 +27,10 @@ export class DocumentDetails implements OnInit {
   protected readonly processingError = signal('');
   protected readonly deleting = signal(false);
   protected readonly deleteError = signal('');
+  protected readonly editingName = signal(false);
+  protected readonly name = signal('');
+  protected readonly renaming = signal(false);
+  protected readonly renameError = signal('');
 
   ngOnInit(): void {
     this.loadDocument();
@@ -47,6 +51,46 @@ export class DocumentDetails implements OnInit {
       error: (error: unknown) => {
         this.processingError.set(apiErrorMessage(error, 'Не можам да го процесирам документот.'));
         this.processing.set(false);
+      },
+    });
+  }
+
+  protected startRename(): void {
+    const document = this.document();
+    if (!document) return;
+
+    this.name.set(document.fileName);
+    this.renameError.set('');
+    this.editingName.set(true);
+  }
+
+  protected onName(event: Event): void {
+    this.name.set((event.target as HTMLInputElement).value);
+  }
+
+  protected cancelRename(): void {
+    this.editingName.set(false);
+    this.renameError.set('');
+  }
+
+  protected saveName(event: Event): void {
+    event.preventDefault();
+    const document = this.document();
+    const fileName = this.name().trim();
+    if (!document || !fileName) return;
+
+    this.renaming.set(true);
+    this.renameError.set('');
+
+    this.documentsService.renameDocument(document.id, fileName).subscribe({
+      next: (updated) => {
+        this.document.set(updated);
+        this.renaming.set(false);
+        this.editingName.set(false);
+      },
+      error: (error: unknown) => {
+        this.renameError.set(apiErrorMessage(error, 'Не можам да го преименувам документот.'));
+        this.renaming.set(false);
       },
     });
   }

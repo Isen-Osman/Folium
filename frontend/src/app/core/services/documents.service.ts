@@ -22,6 +22,10 @@ export class DocumentsService {
     return this.http.post<Document>('/api/documents', formData);
   }
 
+  renameDocument(id: number, fileName: string): Observable<Document> {
+    return this.http.patch<Document>(`/api/documents/${id}`, { fileName });
+  }
+
   deleteDocument(id: number): Observable<void> {
     return this.http.delete<void>(`/api/documents/${id}`);
   }
