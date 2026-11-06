@@ -1,0 +1,63 @@
+<section class="content">
+  @if (selectedDocument(); as document) {
+    <button class="back-button" type="button" (click)="backToDocuments()">← Назад кон документите</button>
+    <h1>{{ document.fileName }}</h1>
+    <p class="intro">Детали за документот.</p>
+
+    <dl class="details-card">
+      <div><dt>Тип</dt><dd>{{ document.type }}</dd></div>
+      <div><dt>Статус</dt><dd>{{ document.status }}</dd></div>
+      <div><dt>Додаден</dt><dd>{{ document.uploadedAt | date: 'medium' }}</dd></div>
+      <div><dt>ID</dt><dd>{{ document.id }}</dd></div>
+    </dl>
+  } @else if (detailLoading()) {
+    <app-status-message message="Се вчитува документот..." />
+  } @else if (detailError()) {
+    <button class="back-button" type="button" (click)="backToDocuments()">← Назад кон документите</button>
+    <app-status-message [message]="detailError()" [isError]="true" />
+  } @else {
+    <h1>Документи</h1>
+    <p class="intro">Документите зачувани во Folium.</p>
+
+    <form class="upload-card" (submit)="upload($event)">
+      <input type="file" (change)="onFile($event)" accept=".pdf,.docx,image/*" />
+      <select [value]="selectedType()" (change)="onType($event)">
+        <option value="PDF">PDF</option>
+        <option value="IMAGE">IMAGE</option>
+        <option value="DOCX">DOCX</option>
+      </select>
+      <button type="submit" [disabled]="uploading() || !selectedFile()">
+        {{ uploading() ? 'Се прикачува...' : 'Прикачи' }}
+      </button>
+    </form>
+
+    @if (uploadError()) {
+      <app-status-message [message]="uploadError()" [isError]="true" />
+    } @else if (uploadSuccess()) {
+      <app-status-message [message]="uploadSuccess()" />
+    }
+
+    @if (loading()) {
+      <app-status-message message="Се вчитуваат документите..." />
+    } @else if (error()) {
+      <app-status-message [message]="error()" [isError]="true" />
+    } @else if (documents().length === 0) {
+      <app-status-message message="Сè уште нема документи." />
+    } @else {
+      <ul class="document-list">
+        @for (document of documents(); track document.id) {
+          <li>
+            <button class="document-row" type="button" (click)="openDocument(document.id)">
+              <span class="document-name">
+                <strong>{{ document.fileName }}</strong>
+                <small>{{ document.type }} · {{ document.status }}</small>
+              </span>
+              <time>{{ document.uploadedAt | date: 'mediumDate' }}</time>
+              <span class="row-arrow" aria-hidden="true">→</span>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  }
+</section>
