@@ -10,14 +10,23 @@
     <div><dt>ID</dt><dd>{{ document.id }}</dd></div>
   </dl>
 
-  @if (document.status !== 'COMPLETED') {
-    <button class="primary-button" type="button" (click)="processDocument()" [disabled]="processing()">
-      {{ processing() ? 'Се процесира...' : 'Процесирај документ' }}
+  <div class="actions">
+    @if (document.status !== 'COMPLETED') {
+      <button class="primary-button" type="button" (click)="processDocument()" [disabled]="processing()">
+        {{ processing() ? 'Се процесира...' : 'Процесирај документ' }}
+      </button>
+    }
+    <button class="danger-button" type="button" (click)="deleteDocument()" [disabled]="deleting()">
+      {{ deleting() ? 'Се брише...' : 'Избриши' }}
     </button>
-  }
+  </div>
 
   @if (processingError()) {
     <app-status-message [message]="processingError()" [isError]="true" />
+  }
+
+  @if (deleteError()) {
+    <app-status-message [message]="deleteError()" [isError]="true" />
   }
 
   @if (extractedLoading()) {

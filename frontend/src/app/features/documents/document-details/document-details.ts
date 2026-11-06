@@ -25,6 +25,8 @@ export class DocumentDetails implements OnInit {
   protected readonly extractedError = signal('');
   protected readonly processing = signal(false);
   protected readonly processingError = signal('');
+  protected readonly deleting = signal(false);
+  protected readonly deleteError = signal('');
 
   ngOnInit(): void {
     this.loadDocument();
@@ -45,6 +47,26 @@ export class DocumentDetails implements OnInit {
       error: (error: unknown) => {
         this.processingError.set(apiErrorMessage(error, 'Не можам да го процесирам документот.'));
         this.processing.set(false);
+      },
+    });
+  }
+
+  protected deleteDocument(): void {
+    const document = this.document();
+    if (!document) return;
+    if (!window.confirm(`Да се избрише „${document.fileName}“?`)) return;
+
+    this.deleting.set(true);
+    this.deleteError.set('');
+
+    this.documentsService.deleteDocument(document.id).subscribe({
+      next: () => {
+        this.deleting.set(false);
+        this.back.emit();
+      },
+      error: (error: unknown) => {
+        this.deleteError.set(apiErrorMessage(error, 'Не можам да го избришам документот.'));
+        this.deleting.set(false);
       },
     });
   }
