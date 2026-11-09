@@ -3,5 +3,10 @@
   <nav class="nav">
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Дома</a>
     <a routerLink="/documents" routerLinkActive="active">Документи</a>
+    @if (auth.isAuthenticated()) {
+      <button class="nav-button" type="button" (click)="logout()">Одјави се</button>
+    } @else {
+      <a routerLink="/login" routerLinkActive="active">Најава</a>
+    }
   </nav>
 </header>

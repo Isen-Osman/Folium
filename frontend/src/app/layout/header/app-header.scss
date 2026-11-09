@@ -39,3 +39,16 @@
   color: var(--color-primary);
   font-weight: 600;
 }
+
+.nav-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  font: inherit;
+}
+
+.nav-button:hover {
+  color: var(--color-primary);
+}

@@ -1,0 +1,53 @@
+<section class="auth">
+  <form class="auth-card" (submit)="submit($event)">
+    <h1>Регистрација</h1>
+    <p class="auth-intro">Отвори сметка за да почнеш да прикачуваш документи.</p>
+
+    <label>
+      Име
+      <input type="text" autocomplete="given-name" [value]="name()" (input)="onName($event)" required />
+    </label>
+
+    <label>
+      Презиме
+      <input type="text" autocomplete="family-name" [value]="surname()" (input)="onSurname($event)" required />
+    </label>
+
+    <label>
+      Email
+      <input type="email" autocomplete="email" [value]="email()" (input)="onEmail($event)" required />
+    </label>
+
+    <label>
+      Лозинка
+      <input
+        type="password"
+        autocomplete="new-password"
+        [value]="password()"
+        (input)="onPassword($event)"
+        required
+      />
+    </label>
+
+    <label>
+      Потврди лозинка
+      <input
+        type="password"
+        autocomplete="new-password"
+        [value]="confirmPassword()"
+        (input)="onConfirmPassword($event)"
+        required
+      />
+    </label>
+
+    @if (error()) {
+      <app-status-message [message]="error()" [isError]="true" />
+    }
+
+    <button class="auth-button" type="submit" [disabled]="loading()">
+      {{ loading() ? 'Се регистрира...' : 'Регистрирај се' }}
+    </button>
+
+    <p class="auth-switch">Веќе имаш сметка? <a routerLink="/login">Најави се</a></p>
+  </form>
+</section>

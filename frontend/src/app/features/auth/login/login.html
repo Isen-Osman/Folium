@@ -1,0 +1,32 @@
+<section class="auth">
+  <form class="auth-card" (submit)="submit($event)">
+    <h1>Најава</h1>
+    <p class="auth-intro">Влези за да ги гледаш твоите документи.</p>
+
+    <label>
+      Email
+      <input type="email" autocomplete="email" [value]="email()" (input)="onEmail($event)" required />
+    </label>
+
+    <label>
+      Лозинка
+      <input
+        type="password"
+        autocomplete="current-password"
+        [value]="password()"
+        (input)="onPassword($event)"
+        required
+      />
+    </label>
+
+    @if (error()) {
+      <app-status-message [message]="error()" [isError]="true" />
+    }
+
+    <button class="auth-button" type="submit" [disabled]="loading() || !email().trim() || !password()">
+      {{ loading() ? 'Се најавува...' : 'Најави се' }}
+    </button>
+
+    <p class="auth-switch">Немаш сметка? <a routerLink="/register">Регистрирај се</a></p>
+  </form>
+</section>
