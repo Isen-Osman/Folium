@@ -30,6 +30,18 @@ export class DocumentUpload {
     this.selectedType.set((event.target as HTMLSelectElement).value as DocumentType);
   }
 
+  protected onDragOver(event: DragEvent): void {
+    event.preventDefault();
+  }
+
+  protected onDrop(event: DragEvent): void {
+    event.preventDefault();
+    const file = event.dataTransfer?.files?.[0] ?? null;
+    if (file) {
+      this.selectedFile.set(file);
+    }
+  }
+
   protected upload(event: Event): void {
     event.preventDefault();
     const form = event.target as HTMLFormElement;

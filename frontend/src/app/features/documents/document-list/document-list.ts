@@ -4,11 +4,12 @@ import { DocumentsService } from '../../../core/services/documents.service';
 import { Document } from '../../../core/models/document';
 import { apiErrorMessage } from '../../../core/api-error-message';
 import { StatusMessage } from '../../../shared/components/status-message';
+import { StatusBadge } from '../../../shared/components/status-badge';
 import { DocumentDetails } from '../document-details/document-details';
 import { DocumentUpload } from '../document-upload/document-upload';
 
 @Component({
-  imports: [DatePipe, StatusMessage, DocumentDetails, DocumentUpload],
+  imports: [DatePipe, StatusMessage, StatusBadge, DocumentDetails, DocumentUpload],
   selector: 'app-document-list',
   styleUrl: './document-list.scss',
   templateUrl: './document-list.html',

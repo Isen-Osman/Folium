@@ -1,4 +1,7 @@
 <header class="topbar">
   <a class="brand" routerLink="/">folium</a>
-  <span>Мои документи</span>
+  <nav class="nav">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Дома</a>
+    <a routerLink="/documents" routerLinkActive="active">Документи</a>
+  </nav>
 </header>

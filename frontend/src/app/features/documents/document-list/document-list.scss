@@ -11,15 +11,15 @@ h1 {
 
 .intro {
   margin: 8px 0 28px;
-  color: #748077;
+  color: var(--color-muted);
 }
 
 .document-list {
   margin: 0;
   padding: 0 20px;
-  border: 1px solid #e5e9e2;
-  border-radius: 10px;
-  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
   list-style: none;
 }
 
@@ -32,7 +32,7 @@ h1 {
   gap: 16px;
   padding: 0;
   border: 0;
-  border-bottom: 1px solid #edf0eb;
+  border-bottom: 1px solid var(--color-border-soft);
   background: transparent;
   color: inherit;
   cursor: pointer;
@@ -53,7 +53,7 @@ h1 {
 .document-row time,
 .row-arrow {
   margin-top: 5px;
-  color: #7c877f;
+  color: var(--color-muted);
   font-size: 12px;
 }
 
@@ -63,7 +63,7 @@ h1 {
 }
 
 .document-row:hover strong {
-  color: #316b4d;
+  color: var(--color-primary);
 }
 
 @media (max-width: 520px) {
