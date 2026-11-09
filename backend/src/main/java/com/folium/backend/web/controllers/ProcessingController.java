@@ -2,6 +2,8 @@ package com.folium.backend.web.controllers;
 
 import com.folium.backend.dto.response.ProcessingJobResponse;
 import com.folium.backend.service.application.DocumentProcessingService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,14 +23,16 @@ public class ProcessingController {
     }
 
     @PostMapping("/{documentId}")
-    public ProcessingJobResponse processDocument(@PathVariable Long documentId) {
+    public ProcessingJobResponse processDocument(@PathVariable Long documentId,
+                                                 @AuthenticationPrincipal Jwt jwt) {
         return ProcessingJobResponse.from(
-                documentProcessingService.processDocument(documentId));
+                documentProcessingService.processDocument(documentId, jwt.getSubject()));
     }
 
     @GetMapping("/{documentId}/jobs")
-    public List<ProcessingJobResponse> getJobs(@PathVariable Long documentId) {
-        return documentProcessingService.getJobs(documentId).stream()
+    public List<ProcessingJobResponse> getJobs(@PathVariable Long documentId,
+                                              @AuthenticationPrincipal Jwt jwt) {
+        return documentProcessingService.getJobs(documentId, jwt.getSubject()).stream()
                 .map(ProcessingJobResponse::from)
                 .toList();
     }

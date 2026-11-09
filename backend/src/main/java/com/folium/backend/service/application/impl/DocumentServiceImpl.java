@@ -1,22 +1,25 @@
 package com.folium.backend.service.application.impl;
 
 import com.folium.backend.model.domain.Document;
+import com.folium.backend.model.domain.User;
 import com.folium.backend.model.enums.DocumentType;
 import com.folium.backend.repository.DocumentRepository;
 import com.folium.backend.repository.ExtractedDataRepository;
 import com.folium.backend.repository.ProcessingJobRepository;
+import com.folium.backend.repository.UserRepository;
 import com.folium.backend.service.application.DocumentService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -26,32 +29,35 @@ public class DocumentServiceImpl implements DocumentService {
     private final DocumentRepository documentRepository;
     private final ExtractedDataRepository extractedDataRepository;
     private final ProcessingJobRepository processingJobRepository;
+    private final UserRepository userRepository;
     private final Path uploadDir;
 
     public DocumentServiceImpl(DocumentRepository documentRepository,
                                ExtractedDataRepository extractedDataRepository,
                                ProcessingJobRepository processingJobRepository,
+                               UserRepository userRepository,
                                @Value("${app.upload-dir:uploads}") String uploadDir) {
         this.documentRepository = documentRepository;
         this.extractedDataRepository = extractedDataRepository;
         this.processingJobRepository = processingJobRepository;
+        this.userRepository = userRepository;
         this.uploadDir = Path.of(uploadDir);
     }
 
     @Override
-    public List<Document> getDocuments() {
-        return documentRepository.findAll();
+    public List<Document> getDocuments(String ownerEmail) {
+        return documentRepository.findAllByOwner_Email(ownerEmail);
     }
 
     @Override
-    public Document getDocument(Long id) {
-        return documentRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Document not found: " + id));
+    public Document getDocument(Long id, String ownerEmail) {
+        return documentRepository.findByIdAndOwner_Email(id, ownerEmail)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Document not found"));
     }
 
     @Override
     @Transactional
-    public Document createDocument(MultipartFile file, DocumentType type) {
+    public Document createDocument(MultipartFile file, DocumentType type, String ownerEmail) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("File is required");
         }
@@ -61,12 +67,13 @@ public class DocumentServiceImpl implements DocumentService {
             throw new IllegalArgumentException("File name is required");
         }
 
+        User owner = userRepository.findByEmail(ownerEmail)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
         try {
 
             Files.createDirectories(uploadDir);
 
-            // Bezbedno ime: bez patanja (../) i bez cudni znaci.
-            // UUID sprecuva dvajca fajlovi so isto ime da se prepisat.
             String safeName = fileName.replaceAll("[^a-zA-Z0-9._-]", "_");
             Path target = uploadDir.resolve(UUID.randomUUID() + "-" + safeName);
 
@@ -75,6 +82,7 @@ public class DocumentServiceImpl implements DocumentService {
 
             // 4) Zapisi go dokumentot vo bazata, vklucuvajki go patot do fajlot.
             Document document = new Document();
+            document.setOwner(owner);
             document.setFileName(fileName);
             document.setType(type);
             document.setFilePath(target.toString());
@@ -86,16 +94,16 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     @Transactional
-    public Document renameDocument(Long id, String fileName) {
-        Document document = getDocument(id);
+    public Document renameDocument(Long id, String fileName, String ownerEmail) {
+        Document document = getDocument(id, ownerEmail);
         document.setFileName(fileName);
         return documentRepository.save(document);
     }
 
     @Override
     @Transactional
-    public void deleteDocument(Long id) {
-        Document document = getDocument(id);
+    public void deleteDocument(Long id, String ownerEmail) {
+        Document document = getDocument(id, ownerEmail);
 
         processingJobRepository.deleteByDocumentId(id);
         extractedDataRepository.deleteByDocumentId(id);

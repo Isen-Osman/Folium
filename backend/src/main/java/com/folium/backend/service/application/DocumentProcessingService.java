@@ -5,7 +5,7 @@ import com.folium.backend.model.domain.ProcessingJob;
 import java.util.List;
 
 public interface DocumentProcessingService {
-    ProcessingJob processDocument(Long documentId);
+    ProcessingJob processDocument(Long documentId, String ownerEmail);
 
-    List<ProcessingJob> getJobs(Long documentId);
+    List<ProcessingJob> getJobs(Long documentId, String ownerEmail);
 }

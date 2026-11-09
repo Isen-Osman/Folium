@@ -45,8 +45,8 @@ public class DocumentProcessingServiceImpl implements DocumentProcessingService 
 
     @Override
     @Transactional
-    public ProcessingJob processDocument(Long documentId) {
-        Document document = documentService.getDocument(documentId);
+    public ProcessingJob processDocument(Long documentId, String ownerEmail) {
+        Document document = documentService.getDocument(documentId, ownerEmail);
         documentStatusService.changeStatus(document, DocumentStatus.PROCESSING);
 
         ProcessingJob job = new ProcessingJob();
@@ -78,7 +78,8 @@ public class DocumentProcessingServiceImpl implements DocumentProcessingService 
     }
 
     @Override
-    public List<ProcessingJob> getJobs(Long documentId) {
+    public List<ProcessingJob> getJobs(Long documentId, String ownerEmail) {
+        documentService.getDocument(documentId, ownerEmail);
         return processingJobRepository.findByDocumentId(documentId);
     }
 }
