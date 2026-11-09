@@ -9,11 +9,6 @@
       <span class="dropzone-hint">или кликни за избор (PDF, DOCX, слика)</span>
     }
   </label>
-  <select [value]="selectedType()" (change)="onType($event)">
-    <option value="PDF">PDF</option>
-    <option value="IMAGE">IMAGE</option>
-    <option value="DOCX">DOCX</option>
-  </select>
   <button type="submit" [disabled]="uploading() || !selectedFile()">
     {{ uploading() ? 'Се прикачува...' : 'Прикачи' }}
   </button>

@@ -8,6 +8,7 @@ import com.folium.backend.repository.ExtractedDataRepository;
 import com.folium.backend.repository.ProcessingJobRepository;
 import com.folium.backend.repository.UserRepository;
 import com.folium.backend.service.application.DocumentService;
+import com.folium.backend.service.domain.DocumentTypeDetector;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -57,7 +58,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     @Transactional
-    public Document createDocument(MultipartFile file, DocumentType type, String ownerEmail) {
+    public Document createDocument(MultipartFile file, String ownerEmail) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("File is required");
         }
@@ -66,6 +67,10 @@ public class DocumentServiceImpl implements DocumentService {
         if (fileName == null || fileName.isBlank()) {
             throw new IllegalArgumentException("File name is required");
         }
+
+        DocumentType type = DocumentTypeDetector.detect(fileName)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Unsupported file type. Allowed: PDF, DOCX, PNG, JPG, JPEG, GIF, BMP, TIFF, WEBP"));
 
         User owner = userRepository.findByEmail(ownerEmail)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));

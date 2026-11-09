@@ -52,13 +52,33 @@
     <h2>Извлечен текст</h2>
     <pre class="raw-text">{{ data.rawText }}</pre>
 
-    @if (data.fields.length > 0) {
+    @if (editableFields().length > 0) {
       <h2>Полиња</h2>
       <dl class="details-card">
-        @for (field of data.fields; track field.id) {
-          <div><dt>{{ field.name }}</dt><dd>{{ field.value }}</dd></div>
+        @for (field of editableFields(); track field.id; let i = $index) {
+          <div>
+            <dt>{{ field.name }}</dt>
+            <dd>
+              <input
+                class="field-input"
+                type="text"
+                [value]="field.value"
+                (input)="onFieldValue($event, i)"
+              />
+            </dd>
+          </div>
         }
       </dl>
+      <div class="actions">
+        <button class="primary-button" type="button" (click)="saveFields()" [disabled]="savingFields()">
+          {{ savingFields() ? 'Се зачувува...' : 'Зачувај полиња' }}
+        </button>
+      </div>
+      @if (fieldsError()) {
+        <app-status-message [message]="fieldsError()" [isError]="true" />
+      } @else if (fieldsSaved()) {
+        <app-status-message message="Полињата се зачувани." />
+      }
     }
   }
 } @else if (loading()) {

@@ -1,11 +1,12 @@
 package com.folium.backend.web.controllers;
 
 import com.folium.backend.dto.request.RenameDocumentRequest;
+import com.folium.backend.dto.request.UpdateFieldsRequest;
 import com.folium.backend.dto.response.DocumentResponse;
 import com.folium.backend.dto.response.ExtractedDataResponse;
-import com.folium.backend.model.enums.DocumentType;
 import com.folium.backend.service.application.DocumentService;
 import com.folium.backend.service.application.ExtractedDataService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,9 +54,8 @@ public class DocumentController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public DocumentResponse createDocument(@RequestParam("file") MultipartFile file,
-                                           @RequestParam("type") DocumentType type,
                                            @AuthenticationPrincipal Jwt jwt) {
-        return DocumentResponse.from(documentService.createDocument(file, type, jwt.getSubject()));
+        return DocumentResponse.from(documentService.createDocument(file, jwt.getSubject()));
     }
 
     @PatchMapping("/{id}")
@@ -69,6 +70,14 @@ public class DocumentController {
     public ExtractedDataResponse getExtractedData(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) {
         documentService.getDocument(id, jwt.getSubject());
         return ExtractedDataResponse.from(extractedDataService.getByDocumentId(id));
+    }
+
+    @PutMapping("/{id}/extracted-data/fields")
+    public ExtractedDataResponse updateFields(@PathVariable Long id,
+                                              @Valid @RequestBody UpdateFieldsRequest request,
+                                              @AuthenticationPrincipal Jwt jwt) {
+        documentService.getDocument(id, jwt.getSubject());
+        return ExtractedDataResponse.from(extractedDataService.replaceFields(id, request.fields()));
     }
 
     @DeleteMapping("/{id}")

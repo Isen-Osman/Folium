@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Document, DocumentType, ExtractedData, ProcessingJob } from '../models/document';
+import { Document, ExtractedData, ExtractedField, ProcessingJob } from '../models/document';
 
 @Injectable({ providedIn: 'root' })
 export class DocumentsService {
@@ -15,10 +15,9 @@ export class DocumentsService {
     return this.http.get<Document>(`/api/documents/${id}`);
   }
 
-  createDocument(file: File, type: DocumentType): Observable<Document> {
+  createDocument(file: File): Observable<Document> {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('type', type);
     return this.http.post<Document>('/api/documents', formData);
   }
 
@@ -36,5 +35,11 @@ export class DocumentsService {
 
   getExtractedData(id: number): Observable<ExtractedData> {
     return this.http.get<ExtractedData>(`/api/documents/${id}/extracted-data`);
+  }
+
+  updateFields(id: number, fields: ExtractedField[]): Observable<ExtractedData> {
+    return this.http.put<ExtractedData>(`/api/documents/${id}/extracted-data/fields`, {
+      fields: fields.map((field) => ({ name: field.name, value: field.value })),
+    });
   }
 }

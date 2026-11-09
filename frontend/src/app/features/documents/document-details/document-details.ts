@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, inject, input, output, signal } from '@angular/core';
 import { DocumentsService } from '../../../core/services/documents.service';
-import { Document, ExtractedData } from '../../../core/models/document';
+import { Document, ExtractedData, ExtractedField } from '../../../core/models/document';
 import { apiErrorMessage } from '../../../core/api-error-message';
 import { StatusMessage } from '../../../shared/components/status-message';
 import { StatusBadge } from '../../../shared/components/status-badge';
@@ -24,6 +24,10 @@ export class DocumentDetails implements OnInit {
   protected readonly extractedData = signal<ExtractedData | null>(null);
   protected readonly extractedLoading = signal(false);
   protected readonly extractedError = signal('');
+  protected readonly editableFields = signal<ExtractedField[]>([]);
+  protected readonly savingFields = signal(false);
+  protected readonly fieldsError = signal('');
+  protected readonly fieldsSaved = signal(false);
   protected readonly processing = signal(false);
   protected readonly processingError = signal('');
   protected readonly deleting = signal(false);
@@ -96,6 +100,36 @@ export class DocumentDetails implements OnInit {
     });
   }
 
+  protected onFieldValue(event: Event, index: number): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.fieldsSaved.set(false);
+    this.editableFields.update((fields) =>
+      fields.map((field, i) => (i === index ? { ...field, value } : field)),
+    );
+  }
+
+  protected saveFields(): void {
+    const document = this.document();
+    if (!document) return;
+
+    this.savingFields.set(true);
+    this.fieldsError.set('');
+    this.fieldsSaved.set(false);
+
+    this.documentsService.updateFields(document.id, this.editableFields()).subscribe({
+      next: (data) => {
+        this.extractedData.set(data);
+        this.editableFields.set(data.fields.map((field) => ({ ...field })));
+        this.savingFields.set(false);
+        this.fieldsSaved.set(true);
+      },
+      error: (error: unknown) => {
+        this.fieldsError.set(apiErrorMessage(error, 'Не можам да ги зачувам полињата.'));
+        this.savingFields.set(false);
+      },
+    });
+  }
+
   protected deleteDocument(): void {
     const document = this.document();
     if (!document) return;
@@ -160,6 +194,7 @@ export class DocumentDetails implements OnInit {
     this.documentsService.getExtractedData(this.documentId()).subscribe({
       next: (data) => {
         this.extractedData.set(data);
+        this.editableFields.set(data.fields.map((field) => ({ ...field })));
         this.extractedLoading.set(false);
       },
       error: (error: unknown) => {

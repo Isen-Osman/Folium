@@ -1,6 +1,5 @@
 import { Component, inject, output, signal } from '@angular/core';
 import { DocumentsService } from '../../../core/services/documents.service';
-import { DocumentType } from '../../../core/models/document';
 import { apiErrorMessage } from '../../../core/api-error-message';
 import { StatusMessage } from '../../../shared/components/status-message';
 
@@ -16,7 +15,6 @@ export class DocumentUpload {
   readonly uploaded = output<void>();
 
   protected readonly selectedFile = signal<File | null>(null);
-  protected readonly selectedType = signal<DocumentType>('PDF');
   protected readonly uploading = signal(false);
   protected readonly uploadError = signal('');
   protected readonly uploadSuccess = signal('');
@@ -24,10 +22,6 @@ export class DocumentUpload {
   protected onFile(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.selectedFile.set(input.files?.[0] ?? null);
-  }
-
-  protected onType(event: Event): void {
-    this.selectedType.set((event.target as HTMLSelectElement).value as DocumentType);
   }
 
   protected onDragOver(event: DragEvent): void {
@@ -52,11 +46,10 @@ export class DocumentUpload {
     this.uploadError.set('');
     this.uploadSuccess.set('');
 
-    this.documentsService.createDocument(file, this.selectedType()).subscribe({
+    this.documentsService.createDocument(file).subscribe({
       next: (document) => {
         this.uploading.set(false);
         this.selectedFile.set(null);
-        this.selectedType.set('PDF');
         form.reset();
         this.uploadSuccess.set(`Документот „${document.fileName}“ е прикачен.`);
         this.uploaded.emit();

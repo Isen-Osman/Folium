@@ -1,9 +1,11 @@
 package com.folium.backend.service.application.impl;
 
 import com.folium.backend.extraction.model.TextExtractionResult;
+import com.folium.backend.extraction.service.FieldExtractionService;
 import com.folium.backend.extraction.service.TextExtractionService;
 import com.folium.backend.model.domain.Document;
 import com.folium.backend.model.domain.ExtractedData;
+import com.folium.backend.model.domain.ExtractedField;
 import com.folium.backend.model.domain.ProcessingJob;
 import com.folium.backend.model.enums.DocumentStatus;
 import com.folium.backend.ocr.enums.OcrLanguage;
@@ -20,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional(readOnly = true)
@@ -29,17 +32,20 @@ public class DocumentProcessingServiceImpl implements DocumentProcessingService 
     private final DocumentStatusService documentStatusService;
     private final ProcessingJobRepository processingJobRepository;
     private final TextExtractionService textExtractionService;
+    private final FieldExtractionService fieldExtractionService;
     private final ExtractedDataService extractedDataService;
 
     public DocumentProcessingServiceImpl(DocumentService documentService,
                                          DocumentStatusService documentStatusService,
                                          ProcessingJobRepository processingJobRepository,
                                          TextExtractionService textExtractionService,
+                                         FieldExtractionService fieldExtractionService,
                                          ExtractedDataService extractedDataService) {
         this.documentService = documentService;
         this.documentStatusService = documentStatusService;
         this.processingJobRepository = processingJobRepository;
         this.textExtractionService = textExtractionService;
+        this.fieldExtractionService = fieldExtractionService;
         this.extractedDataService = extractedDataService;
     }
 
@@ -68,6 +74,16 @@ public class DocumentProcessingServiceImpl implements DocumentProcessingService 
         ExtractedData extractedData = new ExtractedData();
         extractedData.setDocument(document);
         extractedData.setRawText(result.text());
+
+        Map<String, String> values = fieldExtractionService.extract(result.text());
+        values.forEach((name, value) -> {
+            ExtractedField field = new ExtractedField();
+            field.setExtractedData(extractedData);
+            field.setName(name);
+            field.setValue(value);
+            extractedData.getFields().add(field);
+        });
+
         extractedDataService.save(extractedData);
 
         documentStatusService.changeStatus(document, DocumentStatus.COMPLETED);
