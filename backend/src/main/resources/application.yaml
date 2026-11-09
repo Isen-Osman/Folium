@@ -22,3 +22,5 @@ spring:
 
 app:
   upload-dir: uploads
+  jwt:
+    secret: ${JWT_SECRET}
