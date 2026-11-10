@@ -1,21 +1,31 @@
 <form class="upload-card" (submit)="upload($event)">
   <label class="dropzone" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
-    <input type="file" (change)="onFile($event)" accept=".pdf,.docx,image/*" hidden />
-    @if (selectedFile(); as file) {
-      <span class="dropzone-title">{{ file.name }}</span>
-      <span class="dropzone-hint">Кликни или претегни друг фајл</span>
+    <input type="file" (change)="onFile($event)" accept=".pdf,.docx,image/*" multiple hidden />
+    @if (selectedFiles().length > 0) {
+      <span class="dropzone-title">{{ selectedFiles().length }} фајл(ови) избрани</span>
+      <span class="dropzone-hint">Кликни или претегни за друг избор</span>
     } @else {
-      <span class="dropzone-title">Претегни фајл тука</span>
-      <span class="dropzone-hint">или кликни за избор (PDF, DOCX, слика)</span>
+      <span class="dropzone-title">Претегни фајлови тука</span>
+      <span class="dropzone-hint">или кликни за избор (PDF, DOCX, слика — повеќе одеднаш)</span>
     }
   </label>
-  <button type="submit" [disabled]="uploading() || !selectedFile()">
-    {{ uploading() ? 'Се прикачува...' : 'Прикачи' }}
+  <button type="submit" [disabled]="uploading() || selectedFiles().length === 0">
+    {{ uploading() ? 'Се обработува...' : 'Прикачи' }}
   </button>
 </form>
 
+@if (progress()) {
+  <app-status-message [message]="progress()" />
+}
 @if (uploadError()) {
   <app-status-message [message]="uploadError()" [isError]="true" />
 } @else if (uploadSuccess()) {
   <app-status-message [message]="uploadSuccess()" />
+}
+@if (failedFiles().length > 0) {
+  <ul class="failed-list">
+    @for (item of failedFiles(); track $index) {
+      <li>{{ item.name }} — {{ item.reason }}</li>
+    }
+  </ul>
 }

@@ -10,6 +10,10 @@ export interface Document {
   uploadedAt: string;
 }
 
+export interface BatchProcessResponse {
+  queued: number;
+}
+
 export interface ProcessingJob {
   id: number;
   documentId: number;
