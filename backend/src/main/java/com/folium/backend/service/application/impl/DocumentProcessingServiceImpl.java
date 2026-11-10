@@ -94,6 +94,21 @@ public class DocumentProcessingServiceImpl implements DocumentProcessingService 
     }
 
     @Override
+    @Transactional
+    public void markFailed(Long documentId, String ownerEmail, String reason) {
+        Document document = documentService.getDocument(documentId, ownerEmail);
+        documentStatusService.changeStatus(document, DocumentStatus.FAILED);
+
+        ProcessingJob job = new ProcessingJob();
+        job.setDocument(document);
+        job.setStatus(DocumentStatus.FAILED);
+        job.setStartedAt(Instant.now());
+        job.setFinishedAt(Instant.now());
+        job.setErrorMessage(reason);
+        processingJobRepository.save(job);
+    }
+
+    @Override
     public List<ProcessingJob> getJobs(Long documentId, String ownerEmail) {
         documentService.getDocument(documentId, ownerEmail);
         return processingJobRepository.findByDocumentId(documentId);
