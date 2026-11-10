@@ -43,19 +43,79 @@ h2 {
   text-align: right;
 }
 
+.fields-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 28px 0 12px;
+}
+
+.fields-header h2 {
+  margin: 0;
+}
+
+.review-count {
+  color: var(--color-danger);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
 .field-input {
-  width: min(320px, 55vw);
-  padding: 8px 10px;
+  width: 100%;
+  padding: 9px 12px;
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-sm);
+  background: var(--color-surface);
   color: inherit;
   font: inherit;
-  text-align: right;
+  text-align: left;
 }
 
 .field-input:focus {
   border-color: var(--color-primary);
   outline: 2px solid var(--color-primary-soft);
+}
+
+.field-input.missing {
+  border-color: var(--color-danger);
+  background: var(--color-danger-soft);
+}
+
+.raw-text-details {
+  margin-top: 28px;
+}
+
+.raw-text-details summary {
+  color: var(--color-primary-dark);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.raw-text-details .raw-text {
+  margin-top: 12px;
 }
 
 .actions {
