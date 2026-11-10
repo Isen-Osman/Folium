@@ -8,6 +8,8 @@ import { StatusBadge } from '../../../shared/components/status-badge';
 import { DocumentDetails } from '../document-details/document-details';
 import { DocumentUpload } from '../document-upload/document-upload';
 
+type StatusFilter = 'ALL' | 'COMPLETED' | 'PENDING' | 'FAILED';
+
 function isPendingStatus(status: DocumentStatus): boolean {
   return status === 'UPLOADED' || status === 'PENDING' || status === 'PROCESSING';
 }
@@ -21,6 +23,7 @@ function isPendingStatus(status: DocumentStatus): boolean {
 export class DocumentList implements OnInit, OnDestroy {
   private readonly documentsService = inject(DocumentsService);
   private pollTimer: ReturnType<typeof setInterval> | null = null;
+  private autoCollapsedUpload = false;
 
   protected readonly documents = signal<Document[]>([]);
   protected readonly loading = signal(true);
@@ -28,11 +31,42 @@ export class DocumentList implements OnInit, OnDestroy {
   protected readonly selectedDocumentId = signal<number | null>(null);
   private readonly activeBatchIds = signal<number[]>([]);
 
+  protected readonly showUpload = signal(true);
+  protected readonly search = signal('');
+  protected readonly statusFilter = signal<StatusFilter>('ALL');
+
   protected readonly processingCount = computed(() => {
     const ids = this.activeBatchIds();
     return this.documents().filter(
       (document) => ids.includes(document.id) && isPendingStatus(document.status),
     ).length;
+  });
+
+  protected readonly completedCount = computed(
+    () => this.documents().filter((document) => document.status === 'COMPLETED').length,
+  );
+
+  protected readonly pendingCount = computed(
+    () => this.documents().filter((document) => isPendingStatus(document.status)).length,
+  );
+
+  protected readonly failedCount = computed(
+    () => this.documents().filter((document) => document.status === 'FAILED').length,
+  );
+
+  protected readonly filteredDocuments = computed(() => {
+    const term = this.search().trim().toLowerCase();
+    const filter = this.statusFilter();
+
+    return this.documents().filter((document) => {
+      const matchesSearch = term.length === 0 || document.fileName.toLowerCase().includes(term);
+      const matchesStatus =
+        filter === 'ALL' ||
+        (filter === 'PENDING' && isPendingStatus(document.status)) ||
+        (filter === 'COMPLETED' && document.status === 'COMPLETED') ||
+        (filter === 'FAILED' && document.status === 'FAILED');
+      return matchesSearch && matchesStatus;
+    });
   });
 
   ngOnInit(): void {
@@ -56,12 +90,28 @@ export class DocumentList implements OnInit, OnDestroy {
       next: (documents) => {
         this.documents.set(documents);
         this.loading.set(false);
+        if (!this.autoCollapsedUpload) {
+          this.autoCollapsedUpload = true;
+          this.showUpload.set(documents.length === 0);
+        }
       },
       error: (error: unknown) => {
         this.error.set(apiErrorMessage(error, 'Не можам да ги вчитам документите.'));
         this.loading.set(false);
       },
     });
+  }
+
+  protected toggleUpload(): void {
+    this.showUpload.update((visible) => !visible);
+  }
+
+  protected onSearch(event: Event): void {
+    this.search.set((event.target as HTMLInputElement).value);
+  }
+
+  protected setFilter(filter: StatusFilter): void {
+    this.statusFilter.set(filter);
   }
 
   protected onUploaded(ids: number[]): void {
