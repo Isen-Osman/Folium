@@ -5,7 +5,13 @@
     <h1>Документи</h1>
     <p class="intro">Документите зачувани во Folium.</p>
 
-    <app-document-upload (uploaded)="loadDocuments()" />
+    <app-document-upload (uploaded)="onUploaded($event)" />
+
+    @if (processingCount() > 0) {
+      <app-status-message
+        [message]="'Обработка во тек: ' + processingCount() + ' документ(и) преостануваат...'"
+      />
+    }
 
     @if (loading()) {
       <app-status-message message="Се вчитуваат документите..." />
