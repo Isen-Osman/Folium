@@ -36,3 +36,14 @@ export interface ExtractedData {
   createdAt: string;
   fields: ExtractedField[];
 }
+
+export interface RegisterRow {
+  documentId: number;
+  fileName: string;
+  status: DocumentStatus;
+  invoiceNumber: string | null;
+  date: string | null;
+  issuer: string | null;
+  amount: number | null;
+  needsReview: boolean;
+}

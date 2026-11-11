@@ -7,6 +7,7 @@ import {
   ExtractedData,
   ExtractedField,
   ProcessingJob,
+  RegisterRow,
 } from '../models/document';
 
 @Injectable({ providedIn: 'root' })
@@ -51,5 +52,9 @@ export class DocumentsService {
     return this.http.put<ExtractedData>(`/api/documents/${id}/extracted-data/fields`, {
       fields: fields.map((field) => ({ name: field.name, value: field.value })),
     });
+  }
+
+  getRegister(): Observable<RegisterRow[]> {
+    return this.http.get<RegisterRow[]>('/api/documents/register');
   }
 }
