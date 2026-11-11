@@ -1,5 +1,17 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, computed, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnDestroy,
+  OnInit,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 import { DocumentsService } from '../../../core/services/documents.service';
 import { Document, ExtractedData, ExtractedField } from '../../../core/models/document';
 import { apiErrorMessage } from '../../../core/api-error-message';
@@ -12,8 +24,10 @@ import { StatusBadge } from '../../../shared/components/status-badge';
   styleUrl: './document-details.scss',
   templateUrl: './document-details.html',
 })
-export class DocumentDetails implements OnInit {
+export class DocumentDetails implements OnInit, OnDestroy {
   private readonly documentsService = inject(DocumentsService);
+  private readonly sanitizer = inject(DomSanitizer);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly documentId = input.required<number>();
   readonly back = output<void>();
@@ -36,6 +50,12 @@ export class DocumentDetails implements OnInit {
   protected readonly name = signal('');
   protected readonly renaming = signal(false);
   protected readonly renameError = signal('');
+  protected readonly previewLoading = signal(false);
+  protected readonly previewError = signal('');
+  protected readonly pdfSource = signal<SafeResourceUrl | null>(null);
+  protected readonly imageSource = signal<SafeUrl | null>(null);
+  protected readonly fileDownloading = signal(false);
+  private previewObjectUrl: string | null = null;
 
   protected readonly missingFieldsCount = computed(
     () => this.editableFields().filter((field) => !field.value.trim()).length,
@@ -58,6 +78,10 @@ export class DocumentDetails implements OnInit {
 
   ngOnInit(): void {
     this.loadDocument();
+  }
+
+  ngOnDestroy(): void {
+    this.releasePreview();
   }
 
   protected processDocument(): void {
@@ -173,6 +197,80 @@ export class DocumentDetails implements OnInit {
     this.back.emit();
   }
 
+  protected downloadFile(): void {
+    const document = this.document();
+    if (!document) return;
+
+    if (this.previewObjectUrl) {
+      this.triggerDownload(this.previewObjectUrl, document.fileName);
+      return;
+    }
+
+    this.fileDownloading.set(true);
+    this.previewError.set('');
+
+    this.documentsService
+      .getDocumentFile(document.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (blob) => {
+          const url = URL.createObjectURL(blob);
+          this.triggerDownload(url, document.fileName);
+          URL.revokeObjectURL(url);
+          this.fileDownloading.set(false);
+        },
+        error: (error: unknown) => {
+          this.previewError.set(apiErrorMessage(error, 'Не можам да го преземам фајлот.'));
+          this.fileDownloading.set(false);
+        },
+      });
+  }
+
+  private triggerDownload(url: string, fileName: string): void {
+    const link = window.document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.click();
+  }
+
+  private loadPreview(): void {
+    const document = this.document();
+    if (!document || document.type === 'DOCX') return;
+
+    this.releasePreview();
+    this.previewLoading.set(true);
+    this.previewError.set('');
+
+    this.documentsService
+      .getDocumentFile(document.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (blob) => {
+          const url = URL.createObjectURL(blob);
+          this.previewObjectUrl = url;
+          if (document.type === 'PDF') {
+            this.pdfSource.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+          } else {
+            this.imageSource.set(this.sanitizer.bypassSecurityTrustUrl(url));
+          }
+          this.previewLoading.set(false);
+        },
+        error: (error: unknown) => {
+          this.previewError.set(apiErrorMessage(error, 'Не можам да го вчитам фајлот.'));
+          this.previewLoading.set(false);
+        },
+      });
+  }
+
+  private releasePreview(): void {
+    if (this.previewObjectUrl) {
+      URL.revokeObjectURL(this.previewObjectUrl);
+      this.previewObjectUrl = null;
+    }
+    this.pdfSource.set(null);
+    this.imageSource.set(null);
+  }
+
   private loadDocument(): void {
     this.loading.set(true);
     this.error.set('');
@@ -181,6 +279,7 @@ export class DocumentDetails implements OnInit {
       next: (document) => {
         this.document.set(document);
         this.loading.set(false);
+        this.loadPreview();
         if (document.status === 'COMPLETED') {
           this.loadExtractedData();
         }

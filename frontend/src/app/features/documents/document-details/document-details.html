@@ -11,17 +11,15 @@
   } @else {
     <h1>{{ document.fileName }}</h1>
   }
-  <p class="intro">Детали за документот.</p>
 
   <dl class="details-card">
     <div><dt>Тип</dt><dd>{{ document.type }}</dd></div>
     <div><dt>Статус</dt><dd><app-status-badge [status]="document.status" /></dd></div>
-    <div><dt>Додаден</dt><dd>{{ document.uploadedAt | date: 'medium' }}</dd></div>
-    <div><dt>ID</dt><dd>{{ document.id }}</dd></div>
+    <div><dt>Додаден</dt><dd>{{ document.uploadedAt | date: 'dd.MM.yyyy, HH:mm' }}</dd></div>
   </dl>
 
-  <div class="actions">
-    <button class="secondary-button" type="button" (click)="startRename()">Преименувај</button>
+  <div class="actions doc-actions">
+    <button class="secondary-button" type="button" (click)="startRename()">Измени</button>
     @if (document.status !== 'COMPLETED') {
       <button class="primary-button" type="button" (click)="processDocument()" [disabled]="processing()">
         {{ processing() ? 'Се процесира...' : 'Процесирај документ' }}
@@ -44,11 +42,7 @@
     <app-status-message [message]="renameError()" [isError]="true" />
   }
 
-  @if (extractedLoading()) {
-    <app-status-message message="Се вчитуваат извлечените податоци..." />
-  } @else if (extractedError()) {
-    <app-status-message [message]="extractedError()" [isError]="true" />
-  } @else if (extractedData(); as data) {
+  @if (extractedData(); as data) {
     @if (editableFields().length > 0) {
       <div class="fields-header">
         <h2>Полиња</h2>
@@ -88,12 +82,49 @@
         <app-status-message message="Полињата се зачувани." />
       }
     }
-
-    <details class="raw-text-details">
-      <summary>Извлечен текст</summary>
-      <pre class="raw-text">{{ data.rawText }}</pre>
-    </details>
   }
+
+  <div class="split">
+    <section class="panel text-panel">
+      <h2>Извлечен текст</h2>
+      @if (extractedLoading()) {
+        <p class="panel-note">Се вчитуваат извлечените податоци...</p>
+      } @else if (extractedError()) {
+        <p class="panel-note error">{{ extractedError() }}</p>
+      } @else if (extractedData(); as data) {
+        <pre class="raw-text">{{ data.rawText }}</pre>
+      } @else {
+        <p class="panel-note">Нема извлечен текст. Процесирај го документот за да се извлече.</p>
+      }
+    </section>
+
+    <aside class="panel file-panel">
+      <div class="panel-header">
+        <h2>Документ</h2>
+        <button class="text-button" type="button" (click)="downloadFile()" [disabled]="fileDownloading()">
+          {{ fileDownloading() ? 'Се презема...' : 'Превземи' }}
+        </button>
+      </div>
+
+      @if (document.type === 'DOCX') {
+        <p class="panel-note">DOCX не може да се прикаже директно во browser. Превземи го за да го отвориш.</p>
+      } @else if (previewLoading()) {
+        <p class="panel-note">Се вчитува фајлот...</p>
+      } @else if (document.type === 'PDF') {
+        @if (pdfSource(); as src) {
+          <iframe class="file-frame" [src]="src" title="Преглед на документот"></iframe>
+        }
+      } @else {
+        @if (imageSource(); as src) {
+          <img class="file-image" [src]="src" [alt]="document.fileName" />
+        }
+      }
+
+      @if (previewError()) {
+        <p class="panel-note error">{{ previewError() }}</p>
+      }
+    </aside>
+  </div>
 } @else if (loading()) {
   <app-status-message message="Се вчитува документот..." />
 } @else if (error()) {
