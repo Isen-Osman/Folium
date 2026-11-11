@@ -4,12 +4,7 @@
       <h1>Регистар на фактури</h1>
       <p class="intro">Нормализирани податоци од обработените документи.</p>
     </div>
-    <div class="header-actions">
-      @if (rows().length > 0) {
-        <button class="secondary-button" type="button" (click)="exportCsv()">Извези CSV</button>
-      }
-      <a class="back-link" routerLink="/documents">← Документи</a>
-    </div>
+    <a class="back-link" routerLink="/documents">← Документи</a>
   </header>
 
   @if (loading()) {
@@ -50,15 +45,35 @@
     </div>
 
     <div class="summary">
-      <span><strong>{{ sortedRows().length }}</strong> фактури</span>
-      <span>Вкупно: <strong>{{ formatAmount(totalAmount()) }}</strong></span>
-      @if (needsReviewCount() > 0) {
-        <span class="review">{{ needsReviewCount() }} за проверка</span>
-      }
+      <div class="summary-stats">
+        <span>
+          @if (hasFilters()) {
+            <strong>{{ sortedRows().length }}</strong> од {{ rows().length }} фактури
+          } @else {
+            <strong>{{ rows().length }}</strong> фактури
+          }
+        </span>
+        <span>Вкупно: <strong>{{ formatAmount(totalAmount()) }}</strong></span>
+        @if (needsReviewCount() > 0) {
+          <span class="review">{{ needsReviewCount() }} за проверка</span>
+        }
+      </div>
+      <button
+        class="download-button"
+        type="button"
+        [disabled]="sortedRows().length === 0"
+        title="Превземи ги прикажаните фактури како CSV"
+        (click)="exportCsv()"
+      >
+        Превземи CSV
+      </button>
     </div>
 
     @if (sortedRows().length === 0) {
-      <app-status-message message="Нема фактури што одговараат на филтрите." />
+      <div class="no-results">
+        <app-status-message message="Нема фактури што одговараат на филтрите." />
+        <button class="clear-button" type="button" (click)="clearFilters()">Исчисти филтри</button>
+      </div>
     } @else {
       <div class="table-scroll">
         <table>
