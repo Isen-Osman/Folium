@@ -2,12 +2,20 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { apiErrorMessage } from '../../../core/api-error-message';
 import { RegisterRow } from '../../../core/models/document';
+import { registerRowsToCsv } from '../../../core/register-csv';
 import { DocumentsService } from '../../../core/services/documents.service';
 import { StatusBadge } from '../../../shared/components/status-badge';
 import { StatusMessage } from '../../../shared/components/status-message';
 
 type SortField = 'date' | 'amount';
 type SortDirection = 'asc' | 'desc';
+
+function today(): string {
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${now.getFullYear()}-${month}-${day}`;
+}
 
 @Component({
   imports: [RouterLink, StatusBadge, StatusMessage],
@@ -159,6 +167,24 @@ export class DocumentRegister implements OnInit {
     this.issuerFilter.set('');
     this.dateFrom.set('');
     this.dateTo.set('');
+  }
+
+  protected exportCsv(): void {
+    const rows = this.sortedRows();
+    if (rows.length === 0) {
+      return;
+    }
+
+    const blob = new Blob([registerRowsToCsv(rows)], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `fakturi-${today()}.csv`;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   }
 
   protected toggleSort(field: SortField): void {

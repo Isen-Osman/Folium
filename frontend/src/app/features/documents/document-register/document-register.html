@@ -4,7 +4,12 @@
       <h1>Регистар на фактури</h1>
       <p class="intro">Нормализирани податоци од обработените документи.</p>
     </div>
-    <a class="back-link" routerLink="/documents">← Документи</a>
+    <div class="header-actions">
+      @if (rows().length > 0) {
+        <button class="secondary-button" type="button" (click)="exportCsv()">Извези CSV</button>
+      }
+      <a class="back-link" routerLink="/documents">← Документи</a>
+    </div>
   </header>
 
   @if (loading()) {
