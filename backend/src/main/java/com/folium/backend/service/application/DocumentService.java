@@ -10,6 +10,8 @@ public interface DocumentService {
 
     Document getDocument(Long id, String ownerEmail);
 
+    DocumentFile getFile(Long id, String ownerEmail);
+
     Document createDocument(MultipartFile file, String ownerEmail);
 
     Document renameDocument(Long id, String fileName, String ownerEmail);
