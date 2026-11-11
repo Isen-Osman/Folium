@@ -7,10 +7,14 @@ import com.folium.backend.repository.DocumentRepository;
 import com.folium.backend.repository.ExtractedDataRepository;
 import com.folium.backend.repository.ProcessingJobRepository;
 import com.folium.backend.repository.UserRepository;
+import com.folium.backend.service.application.DocumentFile;
 import com.folium.backend.service.application.DocumentService;
 import com.folium.backend.service.domain.DocumentTypeDetector;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,6 +58,37 @@ public class DocumentServiceImpl implements DocumentService {
     public Document getDocument(Long id, String ownerEmail) {
         return documentRepository.findByIdAndOwner_Email(id, ownerEmail)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Document not found"));
+    }
+
+    @Override
+    public DocumentFile getFile(Long id, String ownerEmail) {
+        Document document = getDocument(id, ownerEmail);
+        String filePath = document.getFilePath();
+        if (filePath == null || filePath.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "File not found");
+        }
+
+        Path path = Path.of(filePath);
+        if (!Files.isRegularFile(path)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "File not found");
+        }
+
+        return new DocumentFile(
+                new FileSystemResource(path),
+                contentType(document),
+                document.getFileName());
+    }
+
+    private MediaType contentType(Document document) {
+        if (document.getType() == DocumentType.PDF) {
+            return MediaType.APPLICATION_PDF;
+        }
+        if (document.getType() == DocumentType.DOCX) {
+            return MediaType.parseMediaType(
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        }
+        return MediaTypeFactory.getMediaType(document.getFileName())
+                .orElse(MediaType.APPLICATION_OCTET_STREAM);
     }
 
     @Override

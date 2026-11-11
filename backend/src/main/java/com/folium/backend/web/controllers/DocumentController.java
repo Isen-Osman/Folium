@@ -5,12 +5,17 @@ import com.folium.backend.dto.request.UpdateFieldsRequest;
 import com.folium.backend.dto.response.DocumentResponse;
 import com.folium.backend.dto.response.ExtractedDataResponse;
 import com.folium.backend.dto.response.RegisterRowResponse;
+import com.folium.backend.service.application.DocumentFile;
 import com.folium.backend.service.application.DocumentService;
 import com.folium.backend.service.application.ExtractedDataService;
 import com.folium.backend.service.application.RegisterService;
 import jakarta.validation.Valid;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,6 +31,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -59,6 +65,18 @@ public class DocumentController {
     @GetMapping("/{id}")
     public DocumentResponse getDocument(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) {
         return DocumentResponse.from(documentService.getDocument(id, jwt.getSubject()));
+    }
+
+    @GetMapping("/{id}/file")
+    public ResponseEntity<Resource> getFile(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) {
+        DocumentFile file = documentService.getFile(id, jwt.getSubject());
+        ContentDisposition disposition = ContentDisposition.inline()
+                .filename(file.fileName(), StandardCharsets.UTF_8)
+                .build();
+        return ResponseEntity.ok()
+                .contentType(file.contentType())
+                .header(HttpHeaders.CONTENT_DISPOSITION, disposition.toString())
+                .body(file.resource());
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
