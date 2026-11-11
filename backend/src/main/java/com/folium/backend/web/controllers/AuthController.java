@@ -63,6 +63,12 @@ public class AuthController {
                         && passwordEncoder.matches(request.password(), existingUser.getPassword()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password"));
 
-        return new LoginResponse(jwtService.createToken(user), "Bearer");
+        return new LoginResponse(
+                jwtService.createToken(user),
+                "Bearer",
+                user.getId(),
+                user.getName(),
+                user.getSurname(),
+                user.getEmail());
     }
 }

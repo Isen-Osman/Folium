@@ -3,7 +3,14 @@ export interface LoginRequest {
   password: string;
 }
 
-export interface LoginResponse {
+export interface AuthUser {
+  id: number;
+  name: string | null;
+  surname: string | null;
+  email: string;
+}
+
+export interface LoginResponse extends AuthUser {
   accessToken: string;
   tokenType: string;
 }
