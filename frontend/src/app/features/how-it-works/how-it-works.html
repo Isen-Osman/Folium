@@ -1,0 +1,202 @@
+<div class="page">
+  <a class="back-link" routerLink="/">← Назад кон почетна</a>
+
+  <p class="eyebrow">Како функционира</p>
+  <h1>Од фајл до средени податоци.</h1>
+  <p class="lead">
+    Folium го претвора секој документ во структурирани информации низ неколку едноставни чекори.
+    Без рачно препишување и без распрснати фајлови.
+  </p>
+
+  <section class="example">
+    <h2>Еве што прави со една фактура</h2>
+    <p class="example-sub">Од оригиналниот документ до полиња подготвени за регистар.</p>
+
+    <div class="example-grid">
+      <div class="paper">
+        <div class="paper-top">
+          <span class="paper-tag">PDF</span>
+          <span class="paper-name">фактура-март.pdf</span>
+        </div>
+        <div class="paper-body">
+          <p class="paper-heading">ФАКТУРА</p>
+          <p>Број: <mark>2026-014</mark></p>
+          <p>Датум: <mark>11.11.2026</mark></p>
+          <p>Издавач: <mark>ДООЕЛ Виола</mark></p>
+          <span class="paper-line"></span>
+          <span class="paper-line short"></span>
+          <p class="paper-total">Вкупно: <mark>125.400,00 ден.</mark></p>
+        </div>
+      </div>
+
+      <div class="example-arrow" aria-hidden="true">
+        <span>→</span>
+        <small>автоматски</small>
+      </div>
+
+      <div class="result">
+        <div class="result-top">
+          <span class="result-dot"></span>
+          Структурирани податоци
+        </div>
+        <dl>
+          <div><dt>Број на фактура</dt><dd>2026-014</dd></div>
+          <div><dt>Датум</dt><dd>11.11.2026</dd></div>
+          <div><dt>Издавач</dt><dd>ДООЕЛ Виола</dd></div>
+          <div><dt>Вкупен износ</dt><dd>125.400,00 ден.</dd></div>
+        </dl>
+        <span class="result-badge">Готово за регистар</span>
+      </div>
+    </div>
+  </section>
+
+  <ol class="steps">
+    <li class="step">
+      <div class="step-copy">
+        <span class="step-label">Чекор 1</span>
+        <h2>Прикачи документ</h2>
+        <p>Избери PDF, DOCX или слика. Можеш да прикачиш еден или повеќе документи одеднаш.</p>
+      </div>
+      <div class="step-visual" aria-hidden="true">
+        <div class="dropzone">
+          <span class="dropzone-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 16V4" />
+              <path d="m7 9 5-5 5 5" />
+              <path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" />
+            </svg>
+          </span>
+          <strong>Претегни фајл</strong>
+          <small>или кликни за избор</small>
+          <div class="file-chips">
+            <span class="file-chip">PDF</span>
+            <span class="file-chip">JPG</span>
+            <span class="file-chip">DOCX</span>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="step">
+      <div class="step-copy">
+        <span class="step-label">Чекор 2</span>
+        <h2>Автоматска обработка</h2>
+        <p>
+          Системот го чита текстот — дигитален или преку OCR за слики — и ги извлекува клучните
+          полиња: број на фактура, датум, издавач и вкупен износ.
+        </p>
+      </div>
+      <div class="step-visual" aria-hidden="true">
+        <div class="process">
+          <div class="process-doc">
+            <span class="skeleton"></span>
+            <span class="skeleton short"></span>
+            <span class="scan-bar"></span>
+            <span class="skeleton"></span>
+            <span class="skeleton short"></span>
+          </div>
+          <div class="process-side">
+            <span class="ocr-badge">OCR</span>
+            <div class="progress"><span></span></div>
+            <small>4/4 полиња</small>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="step">
+      <div class="step-copy">
+        <span class="step-label">Чекор 3</span>
+        <h2>Провери и поправи</h2>
+        <p>
+          Види ги извлечените полиња до оригиналниот документ. Ако нешто не е точно, поправи го и
+          зачувај со еден клик.
+        </p>
+      </div>
+      <div class="step-visual" aria-hidden="true">
+        <div class="verify">
+          <div class="verify-row"><span>Број</span><b>2026-014</b></div>
+          <div class="verify-row active">
+            <span>Издавач</span><b>ДООЕЛ Виола</b>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m4 20 4-1 10-10a2.1 2.1 0 0 0-3-3L5 16l-1 4Z" />
+            </svg>
+          </div>
+          <div class="verify-row"><span>Износ</span><b>125.400,00</b></div>
+          <span class="verify-save">Зачувај</span>
+        </div>
+      </div>
+    </li>
+
+    <li class="step">
+      <div class="step-copy">
+        <span class="step-label">Чекор 4</span>
+        <h2>Прегледај го регистарот</h2>
+        <p>
+          Сите фактури се на едно место — со пребарување, филтри по издавач и датум и преглед на
+          вкупниот износ.
+        </p>
+      </div>
+      <div class="step-visual" aria-hidden="true">
+        <div class="register">
+          <div class="register-filters">
+            <span class="active">Сите</span>
+            <span>За проверка</span>
+          </div>
+          <div class="mini-table">
+            <div class="mini-row head"><span>Фактура</span><span>Издавач</span><span>Износ</span></div>
+            <div class="mini-row"><span>2026-014</span><span>Виола</span><span>125.400</span></div>
+            <div class="mini-row"><span>2026-013</span><span>Алфа</span><span>48.900</span></div>
+            <div class="mini-row"><span>2026-012</span><span>Бета</span><span>92.300</span></div>
+          </div>
+        </div>
+      </div>
+    </li>
+
+    <li class="step">
+      <div class="step-copy">
+        <span class="step-label">Чекор 5</span>
+        <h2>Извези</h2>
+        <p>Превземи CSV со моментално прикажаните резултати и продолжи да работиш во Excel или Sheets.</p>
+      </div>
+      <div class="step-visual" aria-hidden="true">
+        <div class="export">
+          <div class="export-file">
+            <span class="csv-tag">CSV</span>
+            <div>
+              <strong>fakturi-2026-11-11.csv</strong>
+              <small>3 реда · 4 колони</small>
+            </div>
+          </div>
+          <div class="export-rows">
+            <span class="export-line"></span>
+            <span class="export-line short"></span>
+            <span class="export-line"></span>
+          </div>
+          <span class="export-button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 4v11" />
+              <path d="m7 10 5 5 5-5" />
+              <path d="M5 20h14" />
+            </svg>
+            Превземи CSV
+          </span>
+        </div>
+      </div>
+    </li>
+  </ol>
+
+  <div class="formats">
+    <span class="format-chip">PDF</span>
+    <span class="format-chip">DOCX</span>
+    <span class="format-chip">JPG</span>
+    <span class="format-chip">PNG</span>
+    <span class="format-chip">TIFF</span>
+    <span class="format-chip">WEBP</span>
+    <span class="formats-note">До 20 MB по фајл</span>
+  </div>
+
+  <div class="cta">
+    <a class="primary-link" routerLink="/documents">Отвори документи →</a>
+  </div>
+</div>
