@@ -4,8 +4,10 @@ import com.folium.backend.dto.request.RenameDocumentRequest;
 import com.folium.backend.dto.request.UpdateFieldsRequest;
 import com.folium.backend.dto.response.DocumentResponse;
 import com.folium.backend.dto.response.ExtractedDataResponse;
+import com.folium.backend.dto.response.RegisterRowResponse;
 import com.folium.backend.service.application.DocumentService;
 import com.folium.backend.service.application.ExtractedDataService;
+import com.folium.backend.service.application.RegisterService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,11 +34,14 @@ public class DocumentController {
 
     private final DocumentService documentService;
     private final ExtractedDataService extractedDataService;
+    private final RegisterService registerService;
 
     public DocumentController(DocumentService documentService,
-                              ExtractedDataService extractedDataService) {
+                              ExtractedDataService extractedDataService,
+                              RegisterService registerService) {
         this.documentService = documentService;
         this.extractedDataService = extractedDataService;
+        this.registerService = registerService;
     }
 
     @GetMapping
@@ -44,6 +49,11 @@ public class DocumentController {
         return documentService.getDocuments(jwt.getSubject()).stream()
                 .map(DocumentResponse::from)
                 .toList();
+    }
+
+    @GetMapping("/register")
+    public List<RegisterRowResponse> getRegister(@AuthenticationPrincipal Jwt jwt) {
+        return registerService.getRegister(jwt.getSubject());
     }
 
     @GetMapping("/{id}")

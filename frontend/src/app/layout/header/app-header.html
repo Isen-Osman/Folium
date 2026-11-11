@@ -2,7 +2,8 @@
   <a class="brand" routerLink="/">folium</a>
   <nav class="nav">
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Дома</a>
-    <a routerLink="/documents" routerLinkActive="active">Документи</a>
+    <a routerLink="/documents" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Документи</a>
+    <a routerLink="/documents/register" routerLinkActive="active">Регистар</a>
     @if (auth.isAuthenticated()) {
       <button class="nav-button" type="button" (click)="logout()">Одјави се</button>
     } @else {

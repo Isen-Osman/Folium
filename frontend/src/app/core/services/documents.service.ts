@@ -1,7 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Document, ExtractedData, ExtractedField, ProcessingJob } from '../models/document';
+import {
+  BatchProcessResponse,
+  Document,
+  ExtractedData,
+  ExtractedField,
+  ProcessingJob,
+  RegisterRow,
+} from '../models/document';
 
 @Injectable({ providedIn: 'root' })
 export class DocumentsService {
@@ -33,6 +40,10 @@ export class DocumentsService {
     return this.http.post<ProcessingJob>(`/api/processing/${id}`, null);
   }
 
+  processBatch(ids: number[]): Observable<BatchProcessResponse> {
+    return this.http.post<BatchProcessResponse>('/api/processing/batch', { documentIds: ids });
+  }
+
   getExtractedData(id: number): Observable<ExtractedData> {
     return this.http.get<ExtractedData>(`/api/documents/${id}/extracted-data`);
   }
@@ -41,5 +52,9 @@ export class DocumentsService {
     return this.http.put<ExtractedData>(`/api/documents/${id}/extracted-data/fields`, {
       fields: fields.map((field) => ({ name: field.name, value: field.value })),
     });
+  }
+
+  getRegister(): Observable<RegisterRow[]> {
+    return this.http.get<RegisterRow[]>('/api/documents/register');
   }
 }

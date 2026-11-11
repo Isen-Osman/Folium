@@ -49,28 +49,36 @@
   } @else if (extractedError()) {
     <app-status-message [message]="extractedError()" [isError]="true" />
   } @else if (extractedData(); as data) {
-    <h2>Извлечен текст</h2>
-    <pre class="raw-text">{{ data.rawText }}</pre>
-
     @if (editableFields().length > 0) {
-      <h2>Полиња</h2>
-      <dl class="details-card">
-        @for (field of editableFields(); track field.id; let i = $index) {
-          <div>
-            <dt>{{ field.name }}</dt>
-            <dd>
-              <input
-                class="field-input"
-                type="text"
-                [value]="field.value"
-                (input)="onFieldValue($event, i)"
-              />
-            </dd>
-          </div>
+      <div class="fields-header">
+        <h2>Полиња</h2>
+        @if (missingFieldsCount() > 0) {
+          <span class="review-count">{{ missingFieldsCount() }} за проверка</span>
         }
-      </dl>
+      </div>
+
+      <div class="fields-grid">
+        @for (field of editableFields(); track field.id; let i = $index) {
+          <label class="field">
+            <span class="field-label">{{ field.name }}</span>
+            <input
+              class="field-input"
+              [class.missing]="!field.value.trim()"
+              type="text"
+              [value]="field.value"
+              (input)="onFieldValue($event, i)"
+            />
+          </label>
+        }
+      </div>
+
       <div class="actions">
-        <button class="primary-button" type="button" (click)="saveFields()" [disabled]="savingFields()">
+        <button
+          class="primary-button"
+          type="button"
+          (click)="saveFields()"
+          [disabled]="savingFields() || !hasFieldChanges()"
+        >
           {{ savingFields() ? 'Се зачувува...' : 'Зачувај полиња' }}
         </button>
       </div>
@@ -80,6 +88,11 @@
         <app-status-message message="Полињата се зачувани." />
       }
     }
+
+    <details class="raw-text-details">
+      <summary>Извлечен текст</summary>
+      <pre class="raw-text">{{ data.rawText }}</pre>
+    </details>
   }
 } @else if (loading()) {
   <app-status-message message="Се вчитува документот..." />

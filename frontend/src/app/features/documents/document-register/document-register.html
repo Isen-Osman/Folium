@@ -1,0 +1,105 @@
+<section class="content">
+  <header class="page-header">
+    <div>
+      <h1>Регистар на фактури</h1>
+      <p class="intro">Нормализирани податоци од обработените документи.</p>
+    </div>
+    <div class="header-actions">
+      @if (rows().length > 0) {
+        <button class="secondary-button" type="button" (click)="exportCsv()">Извези CSV</button>
+      }
+      <a class="back-link" routerLink="/documents">← Документи</a>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <app-status-message message="Се вчитува регистарот..." />
+  } @else if (error()) {
+    <app-status-message [message]="error()" [isError]="true" />
+  } @else if (rows().length === 0) {
+    <div class="empty-state">
+      <p>Нема обработени фактури. Прикачи документи за да се појават тука.</p>
+      <a class="primary-button" routerLink="/documents">Кон документи</a>
+    </div>
+  } @else {
+    <div class="toolbar">
+      <input
+        class="search"
+        type="search"
+        placeholder="Број, издавач или фајл..."
+        [value]="search()"
+        (input)="onSearch($event)"
+      />
+      <select class="issuer" [value]="issuerFilter()" (change)="onIssuer($event)">
+        <option value="">Сите издавачи</option>
+        @for (issuer of issuers(); track issuer) {
+          <option [value]="issuer">{{ issuer }}</option>
+        }
+      </select>
+      <label class="date-field">
+        <span>Од</span>
+        <input type="date" [value]="dateFrom()" (change)="onDateFrom($event)" />
+      </label>
+      <label class="date-field">
+        <span>До</span>
+        <input type="date" [value]="dateTo()" (change)="onDateTo($event)" />
+      </label>
+      @if (hasFilters()) {
+        <button class="clear-button" type="button" (click)="clearFilters()">Исчисти</button>
+      }
+    </div>
+
+    <div class="summary">
+      <span><strong>{{ sortedRows().length }}</strong> фактури</span>
+      <span>Вкупно: <strong>{{ formatAmount(totalAmount()) }}</strong></span>
+      @if (needsReviewCount() > 0) {
+        <span class="review">{{ needsReviewCount() }} за проверка</span>
+      }
+    </div>
+
+    @if (sortedRows().length === 0) {
+      <app-status-message message="Нема фактури што одговараат на филтрите." />
+    } @else {
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Број</th>
+              <th>
+                <button class="sort-button" type="button" (click)="toggleSort('date')">
+                  Датум {{ sortIndicator('date') }}
+                </button>
+              </th>
+              <th>Издавач</th>
+              <th class="amount-column">
+                <button class="sort-button" type="button" (click)="toggleSort('amount')">
+                  Износ {{ sortIndicator('amount') }}
+                </button>
+              </th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of sortedRows(); track row.documentId) {
+              <tr>
+                <td>
+                  <strong class="invoice-number">{{ row.invoiceNumber ?? '—' }}</strong>
+                  <small class="file-name">{{ row.fileName }}</small>
+                </td>
+                <td class="date-cell">{{ formatDate(row.date) }}</td>
+                <td>{{ row.issuer ?? '—' }}</td>
+                <td class="amount-column">{{ formatAmount(row.amount) }}</td>
+                <td class="status-cell">
+                  <app-status-badge [status]="row.status" />
+                  @if (row.needsReview) {
+                    <span class="review-pill">за проверка</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+</section>

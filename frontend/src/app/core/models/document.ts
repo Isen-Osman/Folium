@@ -10,6 +10,10 @@ export interface Document {
   uploadedAt: string;
 }
 
+export interface BatchProcessResponse {
+  queued: number;
+}
+
 export interface ProcessingJob {
   id: number;
   documentId: number;
@@ -31,4 +35,15 @@ export interface ExtractedData {
   rawText: string;
   createdAt: string;
   fields: ExtractedField[];
+}
+
+export interface RegisterRow {
+  documentId: number;
+  fileName: string;
+  status: DocumentStatus;
+  invoiceNumber: string | null;
+  date: string | null;
+  issuer: string | null;
+  amount: number | null;
+  needsReview: boolean;
 }

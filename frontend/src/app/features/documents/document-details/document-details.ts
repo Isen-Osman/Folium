@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, inject, input, output, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, input, output, signal } from '@angular/core';
 import { DocumentsService } from '../../../core/services/documents.service';
 import { Document, ExtractedData, ExtractedField } from '../../../core/models/document';
 import { apiErrorMessage } from '../../../core/api-error-message';
@@ -36,6 +36,25 @@ export class DocumentDetails implements OnInit {
   protected readonly name = signal('');
   protected readonly renaming = signal(false);
   protected readonly renameError = signal('');
+
+  protected readonly missingFieldsCount = computed(
+    () => this.editableFields().filter((field) => !field.value.trim()).length,
+  );
+
+  protected readonly hasFieldChanges = computed(() => {
+    const data = this.extractedData();
+    if (!data) {
+      return false;
+    }
+    const current = this.editableFields();
+    if (current.length !== data.fields.length) {
+      return true;
+    }
+    return current.some(
+      (field, index) =>
+        field.name !== data.fields[index].name || field.value !== data.fields[index].value,
+    );
+  });
 
   ngOnInit(): void {
     this.loadDocument();
@@ -110,7 +129,7 @@ export class DocumentDetails implements OnInit {
 
   protected saveFields(): void {
     const document = this.document();
-    if (!document) return;
+    if (!document || !this.hasFieldChanges()) return;
 
     this.savingFields.set(true);
     this.fieldsError.set('');

@@ -2,33 +2,124 @@
   @if (selectedDocumentId(); as id) {
     <app-document-details [documentId]="id" (back)="closeDocument()" />
   } @else {
-    <h1>Документи</h1>
-    <p class="intro">Документите зачувани во Folium.</p>
+    <header class="page-header">
+      <div>
+        <h1>Документи</h1>
+        <p class="intro">Прикачи документи и прегледај ги извлечените податоци.</p>
+      </div>
+      <button class="primary-button" type="button" (click)="toggleUpload()">
+        {{ showUpload() ? 'Затвори' : 'Прикачи документи' }}
+      </button>
+    </header>
 
-    <app-document-upload (uploaded)="loadDocuments()" />
+    @if (showUpload()) {
+      <app-document-upload (uploaded)="onUploaded($event)" />
+    }
+
+    @if (processingCount() > 0) {
+      <app-status-message
+        [message]="'Обработка во тек: ' + processingCount() + ' документ(и) преостануваат...'"
+      />
+    }
 
     @if (loading()) {
       <app-status-message message="Се вчитуваат документите..." />
     } @else if (error()) {
       <app-status-message [message]="error()" [isError]="true" />
     } @else if (documents().length === 0) {
-      <app-status-message message="Сè уште нема документи." />
+      <div class="empty-state">
+        <p>Сè уште нема документи.</p>
+        <button class="primary-button" type="button" (click)="toggleUpload()">
+          Прикачи го првиот документ
+        </button>
+      </div>
     } @else {
-      <ul class="document-list">
-        @for (document of documents(); track document.id) {
-          <li>
-            <button class="document-row" type="button" (click)="openDocument(document.id)">
-              <span class="document-name">
-                <strong>{{ document.fileName }}</strong>
-                <small>{{ document.type }}</small>
-              </span>
-              <app-status-badge [status]="document.status" />
-              <time>{{ document.uploadedAt | date: 'mediumDate' }}</time>
-              <span class="row-arrow" aria-hidden="true">→</span>
-            </button>
-          </li>
-        }
-      </ul>
+      <div class="stats">
+        <div class="stat">
+          <span>Вкупно</span>
+          <strong>{{ documents().length }}</strong>
+        </div>
+        <div class="stat">
+          <span>Обработени</span>
+          <strong>{{ completedCount() }}</strong>
+        </div>
+        <div class="stat">
+          <span>Во обработка</span>
+          <strong>{{ pendingCount() }}</strong>
+        </div>
+        <div class="stat">
+          <span>Неуспешни</span>
+          <strong>{{ failedCount() }}</strong>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <input
+          class="search"
+          type="search"
+          placeholder="Пребарај по име на документ..."
+          [value]="search()"
+          (input)="onSearch($event)"
+        />
+        <div class="filters">
+          <button
+            type="button"
+            [class.active]="statusFilter() === 'ALL'"
+            (click)="setFilter('ALL')"
+          >
+            Сите
+          </button>
+          <button
+            type="button"
+            [class.active]="statusFilter() === 'COMPLETED'"
+            (click)="setFilter('COMPLETED')"
+          >
+            Обработени
+          </button>
+          <button
+            type="button"
+            [class.active]="statusFilter() === 'PENDING'"
+            (click)="setFilter('PENDING')"
+          >
+            Во обработка
+          </button>
+          <button
+            type="button"
+            [class.active]="statusFilter() === 'FAILED'"
+            (click)="setFilter('FAILED')"
+          >
+            Неуспешни
+          </button>
+        </div>
+      </div>
+
+      @if (filteredDocuments().length === 0) {
+        <app-status-message message="Нема документи што одговараат на пребарувањето." />
+      } @else {
+        <div class="table">
+          <div class="table-head">
+            <span>Документ</span>
+            <span>Статус</span>
+            <span>Додаден</span>
+            <span></span>
+          </div>
+          <ul class="document-list">
+            @for (document of filteredDocuments(); track document.id) {
+              <li>
+                <button class="document-row" type="button" (click)="openDocument(document.id)">
+                  <span class="document-name">
+                    <strong>{{ document.fileName }}</strong>
+                    <small>{{ document.type }}</small>
+                  </span>
+                  <app-status-badge [status]="document.status" />
+                  <time>{{ document.uploadedAt | date: 'mediumDate' }}</time>
+                  <span class="row-arrow" aria-hidden="true">→</span>
+                </button>
+              </li>
+            }
+          </ul>
+        </div>
+      }
     }
   }
 </section>
