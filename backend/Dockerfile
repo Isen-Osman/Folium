@@ -10,6 +10,15 @@ RUN mvn -B -q -DskipTests package
 
 # ---- Run stage ----
 FROM eclipse-temurin:21-jre
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        tesseract-ocr \
+        tesseract-ocr-eng \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -s "$(dirname "$(find /usr/share -name eng.traineddata | head -n 1)")" /opt/tessdata
+
+ENV TESSDATA_PREFIX=/opt/tessdata
+
 WORKDIR /app
 
 COPY --from=build /app/target/*.jar app.jar
