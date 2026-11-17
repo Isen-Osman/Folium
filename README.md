@@ -28,6 +28,11 @@ The whole stack — database, backend, and frontend — runs with **one Docker c
   <img src="assets/demo.gif" alt="Folium demo" width="800">
 </p>
 
+Watch the project demonstration on YouTube:
+
+[▶ Watch Demo Video](https://www.youtube.com/watch?v=gpRCYFjdll8)
+
+
 ### Screenshots
 
 | Document details | Register (Excel-style table) |
